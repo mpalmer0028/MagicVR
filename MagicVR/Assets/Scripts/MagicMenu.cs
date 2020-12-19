@@ -20,13 +20,22 @@ public class MagicMenu : MonoBehaviour
     
 	void OnDrawGizmos()
 	{
-		float dtheta = (float)(2 * Math.PI / Magics);
-		float theta = 0;
 		Gizmos.color = Color.green;
+		
+		// amount of rotation  needed per magic section
+		float dtheta = (float)(2 * Math.PI / Magics);
+		// offset to make first spawning section the spawn at the top of the circle
+		float offsetToStartAtTop = (float)(2 * Math.PI / 4);
+		// set starting point
+		float theta = offsetToStartAtTop;
+		
 		for(var i = 0; i < Magics; i++){
 			var x = (float)Math.Cos(theta);
 			var y = (float)Math.Sin(theta);
-			Gizmos.DrawWireSphere(transform.position + (new Vector3(x,y,0)/5), .01f);
+			// Inner ring
+			Gizmos.DrawWireSphere(transform.position + (new Vector3(x,y,0)*.2f), .01f);
+			// Outer ring
+			Gizmos.DrawWireSphere(transform.position + (new Vector3(x,y,0)*.5f), .01f);
 			theta += dtheta;
 		}
 		
