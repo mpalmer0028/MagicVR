@@ -6,6 +6,7 @@ using System;
 public class MagicMenu : MonoBehaviour
 {
 	public int Magics = 10;
+	public float Depth = .5f;
 	public GameObject SectionPrefab;
 	private List<GameObject> Sections = new List<GameObject>();
 	private List<GameObject> Icons = new List<GameObject>();
@@ -41,6 +42,7 @@ public class MagicMenu : MonoBehaviour
 		}
 		//Debug.Log(transform.childCount);
 	}
+	
 	/// <summary>
 	/// Build hitbox, visual faces, and gizmo dots
 	/// </summary>
@@ -48,7 +50,7 @@ public class MagicMenu : MonoBehaviour
 	/// <param name="nextAngle">Angle of the end of the section in radians</param>
 	/// <param name="index">Section index for naming</param>
 	private void BuildMagicSection(float angle, float nextAngle, int index){
-		
+		// for centering the uv positions so between 0-1 
 		var centerVec2 = new Vector2(.5f,.5f);
 		var verts = new List<Vector3>();
 
@@ -56,28 +58,23 @@ public class MagicMenu : MonoBehaviour
 			var x = (float)Math.Cos(a);
 			var y = (float)Math.Sin(a);
 			
-			
 			#region Front
 			// Inner ring
-			verts.Add(new Vector3(x,y,0)*.2f);
+			verts.Add((new Vector3(x,y,0)*.2f) - new Vector3(0,0,Depth));
 			UVs.Add((new Vector2(x,y)*.2f/2)+centerVec2);
-			//Gizmos.DrawWireSphere(transform.position + (new Vector3(x,y,0)*.2f), .01f);
 			
 			// Outer ring
-			//Gizmos.DrawWireSphere(transform.position + (new Vector3(x,y,0)*.5f), .01f);
-			verts.Add(new Vector3(x,y,0));
+			verts.Add(new Vector3(x,y,0) - new Vector3(0,0,Depth));
 			UVs.Add((new Vector2(x,y)/2)+centerVec2);
 			#endregion
 		
 			#region  Back 
 			// Inner ring
-			verts.Add((new Vector3(x,y,0)*.2f) + new Vector3(0,0,.25f));
+			verts.Add((new Vector3(x,y,0)*.2f));
 			UVs.Add((new Vector2(x,y)*.2f/2)+centerVec2);
-			//Gizmos.DrawWireSphere(transform.position + (new Vector3(x,y,0)*.2f), .01f);
 			
 			// Outer ring
-			//Gizmos.DrawWireSphere(transform.position + (new Vector3(x,y,0)*.5f), .01f);
-			verts.Add(new Vector3(x,y,0) + new Vector3(0,0,.25f));
+			verts.Add(new Vector3(x,y,0));
 			UVs.Add((new Vector2(x,y)/2)+centerVec2);
 			#endregion	
 		}	
@@ -95,14 +92,33 @@ public class MagicMenu : MonoBehaviour
 		var mf = icon.GetComponent<MeshFilter>();
 		var mr = icon.GetComponent<MeshRenderer>();
 			
-		Triangles = new List<int>{};
-		var mesh = new Mesh();
-		var frontFace = new int[]{0,4,1,4,5,1};
-		mesh.SetVertices(verts);
-		mesh.SetTriangles(frontFace,0);
-		mesh.RecalculateNormals();
-		mf.mesh = mesh;
-		//Gizmos.DrawMesh(mesh, transform.position);
+		Triangles = new List<int>();
+		var colliderMesh = new Mesh();
+		var iconMesh = new Mesh();
+	
+		var frontFace = new List<int>{1,4,0,1,5,4};
+		var backFace = new List<int>{2,6,3,6,7,3};
+		var outerFace = new List<int>{1,3,5,3,7,5};
+		var innerFace = new List<int>{4,2,0,4,6,2};
+		var leftFace = new List<int>{2,1,0,2,3,1};
+		var rightFace = new List<int>{4,5,6,5,7,6};
+		var iconFace = new List<int>{3,6,2,3,7,6};
+				
+		//foreach(var f in new List<int>[]{leftFace}){
+		foreach(var f in new List<int>[]{frontFace, backFace, outerFace, innerFace, leftFace, rightFace}){
+			Triangles.AddRange(f);
+		}
+		
+		colliderMesh.SetVertices(verts);
+		iconMesh.SetVertices(verts);
+		colliderMesh.SetTriangles(Triangles,0);
+		iconMesh.SetTriangles(iconFace,0);
+		colliderMesh.RecalculateNormals();
+		iconMesh.RecalculateNormals();
+		
+		mc.sharedMesh = colliderMesh;
+		mf.mesh = iconMesh;
+		//Gizmos.DrawMesh(colliderMesh, transform.position);
 		Sections.Add(section);
 	}
 	
@@ -123,8 +139,8 @@ public class MagicMenu : MonoBehaviour
 		float theta = offsetToStartAtTop;
 		
 		for(var i = 0; i < Magics; i++){
-			BuildMagicSection(theta,theta + dtheta, i);
-			theta += dtheta;
+			BuildMagicSection(theta,theta - dtheta, i);
+			theta -= dtheta;
 		}
 		
 		
