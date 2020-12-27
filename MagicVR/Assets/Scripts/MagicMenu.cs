@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
+using System.IO;
 
 public class MagicMenu : MonoBehaviour
 {
-	public int Magics = 10;
+	
 	public float Depth = .5f;
 	public GameObject SectionPrefab;
-	private List<GameObject> Sections = new List<GameObject>();
+	public string IconsDirPath;
+
 	private List<GameObject> Icons = new List<GameObject>();
+	private List<string> IconFiles = new List<string>();
+	private int Magics = 10;
+	private List<GameObject> Sections = new List<GameObject>();
 	private List<int> Triangles = new List<int>();
 	private List<Vector2> UVs = new List<Vector2>();
 	private List<Vector3> Vertices = new List<Vector3>();
@@ -17,7 +23,7 @@ public class MagicMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+	    //BuildSections();
     }
 
     // Update is called once per frame
@@ -53,30 +59,42 @@ public class MagicMenu : MonoBehaviour
 		// for centering the uv positions so between 0-1 
 		var centerVec2 = new Vector2(.5f,.5f);
 		var verts = new List<Vector3>();
+		
+		Vertices = new List<Vector3>();
+		UVs = new List<Vector2>();
 
+		
+		
+		var uvV2 = new Vector2(0,0);		
 		foreach(var a in new float[]{angle, nextAngle}){
 			var x = (float)Math.Cos(a);
 			var y = (float)Math.Sin(a);
+			// look into pivoting around
+			var uvRotation = Quaternion.Euler(0,0, 0);
 			
 			#region Front
 			// Inner ring
-			verts.Add((new Vector3(x,y,0)*.2f) - new Vector3(0,0,Depth));
-			UVs.Add((new Vector2(x,y)*.2f/2)+centerVec2);
+			verts.Add((new Vector3(x,y,0)*.5f) - new Vector3(0,0,Depth));
+			UVs.Add(uvRotation*((new Vector2(x,y)*.5f/2)+centerVec2));
+			//UVs.Add(uvV2);
 			
 			// Outer ring
 			verts.Add(new Vector3(x,y,0) - new Vector3(0,0,Depth));
-			UVs.Add((new Vector2(x,y)/2)+centerVec2);
+			//UVs.Add(uvV2 + new Vector2(0,1));
+			UVs.Add(uvRotation*((new Vector2(x,y)/2)+centerVec2));
 			#endregion
 		
 			#region  Back 
 			// Inner ring
-			verts.Add((new Vector3(x,y,0)*.2f));
-			UVs.Add((new Vector2(x,y)*.2f/2)+centerVec2);
+			verts.Add((new Vector3(x,y,0)*.5f));
+			UVs.Add(uvRotation*((new Vector2(x,y)*.5f/2)+centerVec2));
 			
 			// Outer ring
 			verts.Add(new Vector3(x,y,0));
-			UVs.Add((new Vector2(x,y)/2)+centerVec2);
+			UVs.Add(uvRotation*((new Vector2(x,y)/2)+centerVec2));
 			#endregion	
+			//uvV2 += new Vector2(1,0);
+			
 		}	
 		
 		Vertices.AddRange(verts);
@@ -85,8 +103,24 @@ public class MagicMenu : MonoBehaviour
 		var section = Instantiate(SectionPrefab, transform);
 		section.name = string.Format("Section {0}", index);
 		
-		var icon = section.transform.Find("Icon").gameObject;
+		var icon = section.transform.Find("Icon").gameObject;		
+		var ss = section.GetComponent<SectionScript>();		
+		ss.IconFileName = Path.GetFileName(IconFiles[index]).Split('.').First();
 		Icons.Add(icon);
+		IQueryable<Vector3> vertsQ = verts.AsQueryable();
+		var iconLocation = new Vector3(vertsQ.Average(v => v.x), vertsQ.Average(v => v.y), vertsQ.Average(v => v.z));
+		
+		Texture2D tmpTexture = new Texture2D(1,1);
+		byte[] tmpBytes = File.ReadAllBytes(IconFiles[index]);
+		tmpTexture.LoadImage(tmpBytes);
+		
+		var render = icon.GetComponent<Renderer>();
+		// Use temp material to prevent leak
+		var tempMaterial = new Material(render.sharedMaterial);
+		tempMaterial.SetTexture("ImageTexture", tmpTexture);
+		render.sharedMaterial = tempMaterial;
+
+		icon.transform.localPosition = iconLocation;
 		
 		var mc = section.GetComponent<MeshCollider>();
 		var mf = icon.GetComponent<MeshFilter>();
@@ -111,13 +145,15 @@ public class MagicMenu : MonoBehaviour
 		
 		colliderMesh.SetVertices(verts);
 		iconMesh.SetVertices(verts);
+		//Debug.Log(String.Format("{0} {1}",verts.Count, UVs.Count));
+		iconMesh.SetUVs(0,UVs);
 		colliderMesh.SetTriangles(Triangles,0);
 		iconMesh.SetTriangles(iconFace,0);
 		colliderMesh.RecalculateNormals();
 		iconMesh.RecalculateNormals();
 		
 		mc.sharedMesh = colliderMesh;
-		mf.mesh = iconMesh;
+		//mf.mesh = iconMesh;
 		//Gizmos.DrawMesh(colliderMesh, transform.position);
 		Sections.Add(section);
 	}
@@ -126,10 +162,15 @@ public class MagicMenu : MonoBehaviour
 	/// calculate vertices needed for hit boxs
 	/// </summary>
 	public void BuildSections(){
+		//Debug.Log(Application.dataPath);
 		ClearMenuChildren();
+		GetIconFiles();
+		
 		Vertices = new List<Vector3>();
+		UVs = new List<Vector2>();
 		Sections = new List<GameObject>();
 		Icons = new List<GameObject>();
+		
 		// amount of rotation  needed per magic section
 		float dtheta = (float)(2 * Math.PI / Magics);
 		
@@ -138,11 +179,13 @@ public class MagicMenu : MonoBehaviour
 		// set starting point
 		float theta = offsetToStartAtTop;
 		
+		
+		
 		for(var i = 0; i < Magics; i++){
 			BuildMagicSection(theta,theta - dtheta, i);
 			theta -= dtheta;
 		}
-		
+
 		
 	}
 	
@@ -150,5 +193,12 @@ public class MagicMenu : MonoBehaviour
 		while(transform.childCount != 0){
 			DestroyImmediate(transform.GetChild(0).gameObject);
 		}		
+	}
+	
+	public void GetIconFiles(){
+		IconFiles = new List<string>();
+		IconsDirPath = Application.dataPath + @"\Icons\72ppi";
+		IconFiles.AddRange(Directory.EnumerateFiles(IconsDirPath, "*.png"));
+		Magics = IconFiles.Count;		
 	}
 }
