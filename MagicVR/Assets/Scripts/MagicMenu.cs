@@ -108,7 +108,7 @@ public class MagicMenu : MonoBehaviour
 		ss.IconFileName = Path.GetFileName(IconFiles[index]).Split('.').First();
 		Icons.Add(icon);
 		IQueryable<Vector3> vertsQ = verts.AsQueryable();
-		var iconLocation = new Vector3(vertsQ.Average(v => v.x), vertsQ.Average(v => v.y), vertsQ.Average(v => v.z));
+		var iconLocation = new Vector3(vertsQ.Average(v => v.x), vertsQ.Average(v => v.y), 0f);
 		
 		Texture2D tmpTexture = new Texture2D(1,1);
 		byte[] tmpBytes = File.ReadAllBytes(IconFiles[index]);
