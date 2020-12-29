@@ -9,6 +9,7 @@ public class MagicMenu : MonoBehaviour
 {
 	
 	public float Depth = .5f;
+	public float Margin = .25f;
 	public GameObject SectionPrefab;
 	public string IconsDirPath;
 
@@ -173,6 +174,7 @@ public class MagicMenu : MonoBehaviour
 		
 		// amount of rotation  needed per magic section
 		float dtheta = (float)(2 * Math.PI / Magics);
+		var marginTheta = Margin * dtheta;
 		
 		// offset to make first spawning section the spawn at the top of the circle
 		float offsetToStartAtTop = (float)(2 * Math.PI / 4);
@@ -182,7 +184,7 @@ public class MagicMenu : MonoBehaviour
 		
 		
 		for(var i = 0; i < Magics; i++){
-			BuildMagicSection(theta,theta - dtheta, i);
+			BuildMagicSection(theta-marginTheta,theta - dtheta+marginTheta, i);
 			theta -= dtheta;
 		}
 

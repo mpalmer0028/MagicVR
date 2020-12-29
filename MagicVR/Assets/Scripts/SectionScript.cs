@@ -16,7 +16,7 @@ public class SectionScript : MonoBehaviour
 	{
 		InTheZone = true;
 		AnimationStartTime = Time.time;
-		Debug.Log("in");
+		//Debug.Log("in");
 	}
 
 	void OnCollisionExit(Collision collisionInfo)
@@ -35,19 +35,26 @@ public class SectionScript : MonoBehaviour
     void Update()
 	{
 		var t = Icon.transform;
+		var scaleAmount = .05f;
 		if(InTheZone){
 			//Icon.transform.localPosition = new Vector3(0,0,-.5f);
 	    	if(Icon.transform.localPosition.z > FocusSlide){
 	    		
-	    		t.localPosition -= new Vector3(0,0,.05f);
-	    		//t.localPosition = new Vector3(t.localPosition.x,t.localPosition.y, Mathf.Lerp(0f, FocusSlide, (Time.time-AnimationStartTime)/FocusTime));
+	    		t.localPosition -= new Vector3(0,0,.01f);
+	    	}
+			if(Icon.transform.localScale.x < 2){
+	    		
+				t.localScale += new Vector3(scaleAmount,scaleAmount,scaleAmount);
 	    	}
 		}else{
 			//Icon.transform.localPosition = new Vector3(0,0,0);
 			if(Icon.transform.localPosition.z < 0){
-				t.localPosition += new Vector3(0,0,.05f);
-	    		//t.localPosition = new Vector3(t.localPosition.x,t.localPosition.y, Mathf.Lerp(FocusSlide, 0f, (Time.time-AnimationStartTime)/FocusTime));
-	    	}
+				t.localPosition += new Vector3(0,0,.01f);
+			}
+			if(Icon.transform.localScale.x > 1){
+	    		
+				t.localScale -= new Vector3(scaleAmount,scaleAmount,scaleAmount);
+			}
 	    }
     }
 }
