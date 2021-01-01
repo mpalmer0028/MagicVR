@@ -9,6 +9,10 @@ public class MagicMenu : MonoBehaviour
 {
 	
 	public float Depth = .5f;
+	public GameObject[] MagicPrefabs;
+	/// <summary>
+	/// Pecentage of section that should be a margin
+	/// </summary>
 	public float Margin = .25f;
 	public GameObject SectionPrefab;
 	public string IconsDirPath;
@@ -44,9 +48,9 @@ public class MagicMenu : MonoBehaviour
 		//	//	Gizmos.DrawMesh(mf.mesh, transform.position);
 		//	//}
 		//}
-		foreach(var v in Vertices){
-			Gizmos.DrawWireSphere(transform.position + v, .01f);
-		}
+		//foreach(var v in Vertices){
+		//	Gizmos.DrawWireSphere(transform.position + v, .01f);
+		//}
 		//Debug.Log(transform.childCount);
 	}
 	
@@ -191,12 +195,33 @@ public class MagicMenu : MonoBehaviour
 		
 	}
 	
+	/// <summary>
+	/// Remove old sections from menu
+	/// </summary>
 	public void ClearMenuChildren(){
-		while(transform.childCount != 0){
-			DestroyImmediate(transform.GetChild(0).gameObject);
+		var notSectionObjectsCount = 0;
+		foreach(Transform o in transform){
+			if(!o.name.StartsWith("Section")){
+				notSectionObjectsCount++;
+			}
+		}
+		var i = 0;
+		// Account for non section objects && catch incase something goes wrong
+		while(transform.childCount != notSectionObjectsCount && i < transform.childCount+1){
+			var s = transform.GetChild(i).gameObject;
+			if(s.name.StartsWith("Section")){
+				DestroyImmediate(s);
+			}else{
+				i++;
+			}
+			
 		}		
+		//Debug.Log("Exited");
 	}
 	
+	/// <summary>
+	/// Get file paths for the magic icons
+	/// </summary>
 	public void GetIconFiles(){
 		IconFiles = new List<string>();
 		IconsDirPath = Application.dataPath + @"\Icons\72ppi";
