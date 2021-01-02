@@ -1,21 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using System;
 using System.Linq;
 using System.IO;
 
 public class MagicMenu : MonoBehaviour
 {
-	
+	/// <summary>
+	/// Depth of section collider
+	/// </summary>
 	public float Depth = .5f;
+	
+	/// <summary>
+	/// Prefabs of the spawnable magics
+	/// </summary>
 	public GameObject[] MagicPrefabs;
+	
 	/// <summary>
 	/// Pecentage of section that should be a margin
 	/// </summary>
 	public float Margin = .25f;
+	
+	/// <summary>
+	/// Prefab of a section
+	/// </summary>
 	public GameObject SectionPrefab;
-	public string IconsDirPath;
+	
+	/// <summary>
+	/// Visible text output
+	/// </summary>
+	public GameObject TextOut;
+	
+	private string IconsDirPath;
 
 	private List<GameObject> Icons = new List<GameObject>();
 	private List<string> IconFiles = new List<string>();
@@ -27,7 +45,8 @@ public class MagicMenu : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+	{
+		TextOut = transform.Find("TextOut").gameObject;
 	    //BuildSections();
     }
 
@@ -57,10 +76,11 @@ public class MagicMenu : MonoBehaviour
 	/// <summary>
 	/// Build hitbox, visual faces, and gizmo dots
 	/// </summary>
+	/// <param name="menuPrefabContents">Prefab contents for menu</param>
 	/// <param name="angle">Angle of the start of the section in radians</param>
 	/// <param name="nextAngle">Angle of the end of the section in radians</param>
 	/// <param name="index">Section index for naming</param>
-	private void BuildMagicSection(float angle, float nextAngle, int index){
+	private void BuildMagicSection(ref GameObject menuPrefabContents, float angle, float nextAngle, int index){
 		// for centering the uv positions so between 0-1 
 		var centerVec2 = new Vector2(.5f,.5f);
 		var verts = new List<Vector3>();
@@ -105,25 +125,31 @@ public class MagicMenu : MonoBehaviour
 		Vertices.AddRange(verts);
 			
 		// Add Section
-		var section = Instantiate(SectionPrefab, transform);
+		var section = Instantiate(SectionPrefab, menuPrefabContents.transform);
 		section.name = string.Format("Section {0}", index);
 		
 		var icon = section.transform.Find("Icon").gameObject;		
 		var ss = section.GetComponent<SectionScript>();		
 		ss.IconFileName = Path.GetFileName(IconFiles[index]).Split('.').First();
+		var materialName = string.Format("Assets/Materials/Generated/SectionIcon{0}.mat",ss.IconFileName);
+		var meshName = string.Format("Assets/Meshes/Generated/Section{0}ColliderMesh{1}.asset", index, ss.IconFileName);
+		var textureName = string.Format("Assets/Icons/72ppi/{0}.png",ss.IconFileName);
 		Icons.Add(icon);
 		IQueryable<Vector3> vertsQ = verts.AsQueryable();
 		var iconLocation = new Vector3(vertsQ.Average(v => v.x), vertsQ.Average(v => v.y), 0f);
 		
-		Texture2D tmpTexture = new Texture2D(1,1);
-		byte[] tmpBytes = File.ReadAllBytes(IconFiles[index]);
-		tmpTexture.LoadImage(tmpBytes);
+		var material = (Material)AssetDatabase.LoadAssetAtPath(materialName, typeof(Material));
+		Texture2D texture = (Texture2D)AssetDatabase.LoadAssetAtPath(textureName, typeof(Texture2D));
 		
 		var render = icon.GetComponent<Renderer>();
-		// Use temp material to prevent leak
-		var tempMaterial = new Material(render.sharedMaterial);
-		tempMaterial.SetTexture("ImageTexture", tmpTexture);
-		render.sharedMaterial = tempMaterial;
+		if(material == null){
+			// Use temp material to prevent leak
+			material = new Material(render.sharedMaterial);					
+			AssetDatabase.CreateAsset(material, materialName);
+		}
+		material.SetTexture("ImageTexture", texture);
+		AssetDatabase.SaveAssets();
+		render.sharedMaterial = material;
 
 		icon.transform.localPosition = iconLocation;
 		
@@ -157,6 +183,8 @@ public class MagicMenu : MonoBehaviour
 		colliderMesh.RecalculateNormals();
 		iconMesh.RecalculateNormals();
 		
+		AssetDatabase.CreateAsset(colliderMesh, meshName);
+		AssetDatabase.SaveAssets();
 		mc.sharedMesh = colliderMesh;
 		//mf.mesh = iconMesh;
 		//Gizmos.DrawMesh(colliderMesh, transform.position);
@@ -168,7 +196,14 @@ public class MagicMenu : MonoBehaviour
 	/// </summary>
 	public void BuildSections(){
 		//Debug.Log(Application.dataPath);
-		ClearMenuChildren();
+		// Get the Prefab Asset root GameObject and its asset path.
+		var prefab = PrefabUtility.GetCorrespondingObjectFromSource(gameObject);
+		var prefabPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(prefab);
+		//Debug.Log(prefabPath);
+
+		// Load the contents of the Prefab Asset.
+		GameObject menuPrefabContents = PrefabUtility.LoadPrefabContents(prefabPath);
+		ClearMenuChildren(ref menuPrefabContents);
 		GetIconFiles();
 		
 		Vertices = new List<Vector3>();
@@ -188,27 +223,29 @@ public class MagicMenu : MonoBehaviour
 		
 		
 		for(var i = 0; i < Magics; i++){
-			BuildMagicSection(theta-marginTheta,theta - dtheta+marginTheta, i);
+			BuildMagicSection(ref menuPrefabContents, theta-marginTheta,theta - dtheta+marginTheta, i);
 			theta -= dtheta;
 		}
 
-		
+		PrefabUtility.SaveAsPrefabAsset(menuPrefabContents, prefabPath);
+		PrefabUtility.UnloadPrefabContents(menuPrefabContents);
 	}
 	
 	/// <summary>
 	/// Remove old sections from menu
 	/// </summary>
-	public void ClearMenuChildren(){
+	/// <param name="menuPrefabContents">Prefab contents for menu</param>
+	public void ClearMenuChildren(ref GameObject menuPrefabContents){
 		var notSectionObjectsCount = 0;
-		foreach(Transform o in transform){
+		foreach(Transform o in menuPrefabContents.transform){
 			if(!o.name.StartsWith("Section")){
 				notSectionObjectsCount++;
 			}
 		}
 		var i = 0;
 		// Account for non section objects && catch incase something goes wrong
-		while(transform.childCount != notSectionObjectsCount && i < transform.childCount+1){
-			var s = transform.GetChild(i).gameObject;
+		while(menuPrefabContents.transform.childCount != notSectionObjectsCount && i < menuPrefabContents.transform.childCount+1){
+			var s = menuPrefabContents.transform.GetChild(i).gameObject;
 			if(s.name.StartsWith("Section")){
 				DestroyImmediate(s);
 			}else{
