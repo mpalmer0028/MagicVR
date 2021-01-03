@@ -13,6 +13,12 @@ public class MagicMenu : MonoBehaviour
 	/// </summary>
 	public float Depth = .5f;
 	
+	
+	/// <summary>
+	/// Radius of section
+	/// </summary>
+	public float Radius = 1;
+	
 	/// <summary>
 	/// Prefabs of the spawnable magics
 	/// </summary>
@@ -96,8 +102,8 @@ public class MagicMenu : MonoBehaviour
 		
 		var uvV2 = new Vector2(0,0);		
 		foreach(var a in new float[]{angle, nextAngle}){
-			var x = (float)Math.Cos(a);
-			var y = (float)Math.Sin(a);
+			var x = (float)Math.Cos(a) * Radius;
+			var y = (float)Math.Sin(a) * Radius;
 			// look into pivoting around
 			var uvRotation = Quaternion.Euler(0,0, 0);
 			

@@ -360,6 +360,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3218325813983488913, guid: 2d514966a493aba4099bb2569f830912,
+        type: 3}
+      propertyPath: Margin
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3218325813983488913, guid: 2d514966a493aba4099bb2569f830912,
+        type: 3}
+      propertyPath: Radius
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 3218325813983488918, guid: 2d514966a493aba4099bb2569f830912,
         type: 3}
       propertyPath: m_Name
@@ -555,7 +565,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 7.4e-43, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 2.0971603, z: 9.98e-43, w: 2.4047966}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
