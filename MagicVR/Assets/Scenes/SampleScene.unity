@@ -297,6 +297,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3218325813983488912, guid: 2d514966a493aba4099bb2569f830912,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3218325813983488912, guid: 2d514966a493aba4099bb2569f830912,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3218325813983488912, guid: 2d514966a493aba4099bb2569f830912,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3218325813983488912, guid: 2d514966a493aba4099bb2569f830912,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.718
       objectReference: {fileID: 0}
@@ -308,7 +323,7 @@ PrefabInstance:
     - target: {fileID: 3218325813983488912, guid: 2d514966a493aba4099bb2569f830912,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.422
+      value: 2.113
       objectReference: {fileID: 0}
     - target: {fileID: 3218325813983488912, guid: 2d514966a493aba4099bb2569f830912,
         type: 3}
@@ -349,6 +364,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MagicMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 3218325813983488918, guid: 2d514966a493aba4099bb2569f830912,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d514966a493aba4099bb2569f830912, type: 3}
@@ -406,6 +426,10 @@ PrefabInstance:
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042175074, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+      propertyPath: MagicMenuWarmupTime
+      value: 0.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
@@ -531,7 +555,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 1.2673e-41, z: 0, w: -8.6947693e-10}
+  m_BoundingSphereOverride: {x: 0, y: 7.4e-43, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0

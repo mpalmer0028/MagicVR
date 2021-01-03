@@ -50,6 +50,10 @@ public class MagicMenu : MonoBehaviour
 	    //BuildSections();
     }
 
+	void FixedUpdate(){
+		
+	}
+	
     // Update is called once per frame
     void Update()
     {

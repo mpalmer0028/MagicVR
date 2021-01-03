@@ -105,6 +105,22 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Single Trigger
+        {
+            get
+            {
+                return SteamVR_Actions.default_Trigger;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean DismissMenuAndMagic
+        {
+            get
+            {
+                return SteamVR_Actions.default_DismissMenuAndMagic;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get
