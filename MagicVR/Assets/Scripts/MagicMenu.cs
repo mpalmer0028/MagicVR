@@ -39,6 +39,7 @@ public class MagicMenu : MonoBehaviour
 	/// </summary>
 	public GameObject TextOut;
 	
+	public List<string> PossibleCombinations; 
 	private string IconsDirPath;
 
 	private List<GameObject> Icons = new List<GameObject>();
@@ -68,7 +69,7 @@ public class MagicMenu : MonoBehaviour
     
 	void OnDrawGizmos()
 	{
-		Gizmos.color = Color.green;
+		Gizmos.color = UnityEngine.Color.green;
 		//if(transform.childCount < Magics){
 		//	BuildSections();
 		//}else{
@@ -143,7 +144,7 @@ public class MagicMenu : MonoBehaviour
 		ss.IconFileName = Path.GetFileName(IconFiles[index]).Split('.').First();
 		var materialName = string.Format("Assets/Materials/Generated/SectionIcon{0}.mat",ss.IconFileName);
 		var meshName = string.Format("Assets/Meshes/Generated/Section{0}ColliderMesh{1}.asset", index, ss.IconFileName);
-		var textureName = string.Format("Assets/Icons/72ppi/{0}.png",ss.IconFileName);
+		var textureName = string.Format("Assets/Icons/100ppi/{0}.png",ss.IconFileName);
 		Icons.Add(icon);
 		IQueryable<Vector3> vertsQ = verts.AsQueryable();
 		var iconLocation = new Vector3(vertsQ.Average(v => v.x), vertsQ.Average(v => v.y), 0f);
@@ -237,6 +238,10 @@ public class MagicMenu : MonoBehaviour
 			theta -= dtheta;
 		}
 
+		PossibleCombinations = GetPossibleCombinations(ref menuPrefabContents);
+		menuPrefabContents.GetComponent<MagicMenu>().PossibleCombinations = PossibleCombinations;
+		//Debug.Log(String.Join(", ", x));
+
 		PrefabUtility.SaveAsPrefabAsset(menuPrefabContents, prefabPath);
 		PrefabUtility.UnloadPrefabContents(menuPrefabContents);
 	}
@@ -271,8 +276,32 @@ public class MagicMenu : MonoBehaviour
 	/// </summary>
 	public void GetIconFiles(){
 		IconFiles = new List<string>();
-		IconsDirPath = Application.dataPath + @"\Icons\72ppi";
+		IconsDirPath = Application.dataPath + @"\Icons\100ppi";
 		IconFiles.AddRange(Directory.EnumerateFiles(IconsDirPath, "*.png"));
 		Magics = IconFiles.Count;		
 	}
+	
+	public List<string> GetPossibleCombinations(ref GameObject menuPrefabContents){
+		var sectionNames = new List<string>();
+		var combos = new List<string>();
+		foreach(Transform o in menuPrefabContents.transform){
+			if(o.name.StartsWith("Section")){
+				var ss = o.gameObject.GetComponent<SectionScript>();
+				sectionNames.Add(ss.IconFileName);
+				//Debug.Log(ss.IconFileName);
+			}
+		}
+		var format = "{0} {1}";
+		for(var i = 0; i < sectionNames.Count; i++){
+			combos.Add(string.Format(format, sectionNames[i],sectionNames[i]));
+			for(int i2 = i+1; i2 < sectionNames.Count; i2++){
+				combos.Add(string.Format(format, sectionNames[i],sectionNames[i2]));
+				//Debug.Log(string.Format("{0} {1}", sectionNames[i],sectionNames[i2]));
+			}
+			
+		}
+		
+		return combos;
+	}
+	
 }
