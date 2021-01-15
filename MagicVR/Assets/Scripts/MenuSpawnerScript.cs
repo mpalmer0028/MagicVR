@@ -16,9 +16,12 @@ public class MenuSpawnerScript : MonoBehaviour
 		
 		var headPos = Head.transform.position;
 		var betweenHands = Vector3.Lerp(LeftHand.transform.position,RightHand.transform.position, .5f);
-		var pos = ((betweenHands-headPos)*1.3f)+headPos;
+		var depthFactor = Mathf.Max(2-Vector3.Distance(betweenHands,Head.transform.position),1);
+		var infrontHands = ((betweenHands-Head.transform.position)*depthFactor)+Head.transform.position;
+		var pos = Vector3.Lerp(infrontHands,Head.transform.position, .25f);
 		
-		pos.y = pos.y < lowest ? lowest : pos.y;
+		//pos.y = pos.y < lowest ? lowest : pos.y;
+		//pos.y = Head.transform.position.y;
 		
 		transform.position = pos;
 		transform.LookAt(new Vector3(headPos.x,betweenHands.y,headPos.z));

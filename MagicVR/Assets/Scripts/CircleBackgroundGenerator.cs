@@ -11,12 +11,13 @@ public class CircleBackgroundGenerator : MonoBehaviour
 	{
 		
     	
-        int width = 1080;
-        int height = 1080;
+		int width = 1080*2;
+		int height = 1080*2;
         Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
 
         // Reset all pixels color to transparent
         Color32 resetColor = new Color32(255, 255, 255, 0);
+		Color32 ringColor = new Color32(50, 255, 50, 200);
         Color32[] resetColorArray = tex.GetPixels32();
 
         for (int i = 0; i < resetColorArray.Length; i++)
@@ -24,17 +25,20 @@ public class CircleBackgroundGenerator : MonoBehaviour
             resetColorArray[i] = resetColor;
         }
 
-	    tex.SetPixels32(resetColorArray);
-	    DrawCircle(ref tex,width/2,height/2, width/2.5f, Color.green);
-		DrawCircle(ref tex,width/2,height/2, width/5f, Color.clear);
+		tex.SetPixels32(resetColorArray);
+		//outer
+		DrawCircle(ref tex,width/2,height/2, width/2f, ringColor);
+		DrawCircle(ref tex,width/2,height/2, width/2.1f, resetColor);
 	    
+		DrawCircle(ref tex,width/2,height/2, width/4f, ringColor);
+		DrawCircle(ref tex,width/2,height/2, width/4.5f, resetColor);
 	    
 		//var ttt = new TextToTexture(Font.);
 	    
         tex.Apply();
 
         System.IO.File.WriteAllBytes(Application.dataPath + "/GeneratedImages/CircleBackground.png", tex.EncodeToPNG());
-
+		AssetDatabase.Refresh();
     }
     
 	public static void DrawCircle(ref Texture2D texture, int x, int y, float r, Color color)
@@ -48,4 +52,6 @@ public class CircleBackgroundGenerator : MonoBehaviour
 
 	}
 	
+	
+
 }
