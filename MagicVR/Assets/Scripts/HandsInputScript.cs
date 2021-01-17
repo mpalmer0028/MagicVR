@@ -6,12 +6,24 @@ using Valve.VR.InteractionSystem;
 
 public class HandsInputScript : MonoBehaviour
 {
+	/// <summary>
+	/// Collider object for hand
+	/// </summary>
 	public GameObject LeftHand;
+	
 	public GameObject MagicMenuPrefab;
+	
+	/// <summary>
+	/// Collider object for hand
+	/// </summary>
 	public GameObject RightHand;
+	
 	public GameObject SpawnPoint;
+	
+	// Inputs
 	public SteamVR_Action_Single TriggerInput;
 	public SteamVR_Action_Boolean DismissInput;
+	
 	public float MagicMenuWarmupTime;
 	
 	public GameObject MagicMenu;
@@ -69,6 +81,8 @@ public class HandsInputScript : MonoBehaviour
 		WaitTill = Time.time + 1f;
 		MagicMenuPrelaunchStartTime = 0;
 		MagicMenu = Instantiate(MagicMenuPrefab, SpawnPoint.transform.position, SpawnPoint.transform.rotation*Quaternion.Euler(0,180,0), transform);
+		var mms = MagicMenu.GetComponent<MagicMenu>();
+		mms.HandsInputScript = this;
 	}
 	
 	void CloseMagicMenu(){

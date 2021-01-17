@@ -1,0 +1,140 @@
+{
+	"connections": [
+		{
+			"from": "image",
+			"from_port": 0,
+			"to": "colorize",
+			"to_port": 0
+		},
+		{
+			"from": "colorize",
+			"from_port": 0,
+			"to": "Material",
+			"to_port": 0
+		},
+		{
+			"from": "image",
+			"from_port": 0,
+			"to": "math",
+			"to_port": 0
+		},
+		{
+			"from": "math",
+			"from_port": 0,
+			"to": "Material",
+			"to_port": 7
+		}
+	],
+	"label": "Graph",
+	"longdesc": "",
+	"name": "@@219",
+	"node_position": {
+		"x": 0,
+		"y": 0
+	},
+	"nodes": [
+		{
+			"export_paths": {
+				"Unity": "G:/gamesMade/MagicVR/MagicParticles/Assets/Materials/Particles/Water/WaterCore16"
+			},
+			"name": "Material",
+			"node_position": {
+				"x": 106.481476,
+				"y": -24.305555
+			},
+			"parameters": {
+				"albedo_color": {
+					"a": 1,
+					"b": 1,
+					"g": 1,
+					"r": 1,
+					"type": "Color"
+				},
+				"ao": 1,
+				"depth_scale": 0.5,
+				"emission_energy": 1,
+				"flags_transparent": true,
+				"metallic": 1,
+				"normal": 1,
+				"roughness": 1,
+				"size": 11,
+				"sss": 0
+			},
+			"type": "material"
+		},
+		{
+			"name": "image",
+			"node_position": {
+				"x": -417.5,
+				"y": -86.25
+			},
+			"parameters": {
+				"image": "G:/gamesMade/MagicVR/MagicParticles/Assets/Materials/Particles/Water/WaterGushSpriteSheet16.png"
+			},
+			"type": "image"
+		},
+		{
+			"name": "colorize",
+			"node_position": {
+				"x": -148.841019,
+				"y": -278.789673
+			},
+			"parameters": {
+				"gradient": {
+					"interpolation": 3,
+					"points": [
+						{
+							"a": 1,
+							"b": 0,
+							"g": 0,
+							"pos": 0,
+							"r": 0
+						},
+						{
+							"a": 1,
+							"b": 1,
+							"g": 0.078431,
+							"pos": 0.186402,
+							"r": 0.078431
+						},
+						{
+							"a": 1,
+							"b": 1,
+							"g": 0.156863,
+							"pos": 0.662341,
+							"r": 0.156863
+						},
+						{
+							"a": 1,
+							"b": 1,
+							"g": 0.901961,
+							"pos": 1,
+							"r": 0.901961
+						}
+					],
+					"type": "Gradient"
+				}
+			},
+			"type": "colorize"
+		},
+		{
+			"name": "math",
+			"node_position": {
+				"x": -225.193359,
+				"y": -53.386559
+			},
+			"parameters": {
+				"clamp": false,
+				"default_in1": 0,
+				"default_in2": 0.5,
+				"op": 1
+			},
+			"type": "math"
+		}
+	],
+	"parameters": {
+
+	},
+	"shortdesc": "",
+	"type": "graph"
+}

@@ -13,6 +13,10 @@ public class MagicMenu : MonoBehaviour
 	/// </summary>
 	public float Depth = .5f;
 	
+	/// <summary>
+	/// Hand input and info
+	/// </summary>
+	public HandsInputScript HandsInputScript;
 	
 	/// <summary>
 	/// Radius of section
@@ -30,6 +34,12 @@ public class MagicMenu : MonoBehaviour
 	public float Margin = .25f;
 	
 	/// <summary>
+	/// Target of power zoom rotation
+	/// </summary>
+	public GameObject PowerZoomTarget;
+	
+	
+	/// <summary>
 	/// Prefab of a section
 	/// </summary>
 	public GameObject SectionPrefab;
@@ -44,7 +54,8 @@ public class MagicMenu : MonoBehaviour
 
 	private List<GameObject> Icons = new List<GameObject>();
 	private List<string> IconFiles = new List<string>();
-	private int Magics = 10;
+	public int Magics;
+	private Material BackCircleMaterial;	
 	private List<GameObject> Sections = new List<GameObject>();
 	private List<int> Triangles = new List<int>();
 	private List<Vector2> UVs = new List<Vector2>();
@@ -54,6 +65,10 @@ public class MagicMenu : MonoBehaviour
     void Start()
 	{
 		TextOut = transform.Find("TextOut").gameObject;
+		var bc = transform.Find("BackCircle");
+		var mr = bc.GetComponent<MeshRenderer>();
+		BackCircleMaterial = mr.sharedMaterial;
+		BackCircleMaterial.SetFloat("Alpha", 0);
 	    //BuildSections();
     }
 
@@ -63,8 +78,11 @@ public class MagicMenu : MonoBehaviour
 	
     // Update is called once per frame
     void Update()
-    {
-        
+	{
+		var a = BackCircleMaterial.GetFloat("Alpha");
+		if(a < .2f){
+			BackCircleMaterial.SetFloat("Alpha", a+.001f);
+		}
     }
     
 	void OnDrawGizmos()
@@ -140,6 +158,7 @@ public class MagicMenu : MonoBehaviour
 		section.name = string.Format("Section {0}", index);
 		
 		var icon = section.transform.Find("Icon").gameObject;		
+		var magicGlowParticle = icon.transform.Find("MagicGlowParticle").gameObject;
 		var ss = section.GetComponent<SectionScript>();		
 		ss.IconFileName = Path.GetFileName(IconFiles[index]).Split('.').First();
 		var materialName = string.Format("Assets/Materials/Generated/SectionIcon{0}.mat",ss.IconFileName);

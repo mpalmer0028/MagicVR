@@ -5,30 +5,71 @@ using UnityEngine;
 public class SectionScript : MonoBehaviour
 {
 	public string IconFileName;
-	public float FocusSlide = -.2f;
+	public float FocusSlide = -.1f;
 	public float FocusTime = 1f;
 	
-	public bool InTheZone = false;
-	private float AnimationStartTime;
+	public bool InTheZoneL = false;
+	public bool InTheZoneR = false;
+	
 	public GameObject Icon;
+	public GameObject PowerZoomTarget;
+	public GameObject MagicGlowParticle;
+	public ParticleSystem PS;
+	public ParticleSystem.EmissionModule Emission;
+	
+	private float AnimationStartTime;
+	private Quaternion StartRotation;
+	private Quaternion EndRotation;
+	private Vector3 StartPosition;
+	private Vector3 EndPosition;
+	private MagicMenu MagicMenu;
+	private float SlideI;
 
 	void OnCollisionEnter(Collision collision)
 	{
-		InTheZone = true;
+		if(MagicMenu.HandsInputScript != null){
+			if(collision.collider.name == MagicMenu.HandsInputScript.LeftHand.name){
+				InTheZoneL = true;
+			}else if(collision.collider.name == MagicMenu.HandsInputScript.RightHand.name){
+				InTheZoneR = true;
+			}
+		}
 		AnimationStartTime = Time.time;
 		//Debug.Log("in");
 	}
 
 	void OnCollisionExit(Collision collisionInfo)
 	{
-		InTheZone = false;
+		if(MagicMenu.HandsInputScript != null){
+			if(collisionInfo.collider.name == MagicMenu.HandsInputScript.LeftHand.name){
+				InTheZoneL = false;
+			}else if(collisionInfo.collider.name == MagicMenu.HandsInputScript.RightHand.name){
+				InTheZoneR = false;
+			}
+		}
+		
 		AnimationStartTime = Time.time;
 	}
 	
     // Start is called before the first frame update
     void Start()
 	{
-		Icon = transform.GetChild(0).gameObject;
+		PowerZoomTarget = transform.parent.Find("PowerZoomTarget").gameObject;
+		
+		SlideI = 0f;
+		Icon = transform.Find("Icon").gameObject;
+		
+		MagicGlowParticle = Icon.transform.Find("MagicGlowParticle").gameObject;
+		PS = MagicGlowParticle.GetComponent<ParticleSystem>();
+		Emission = PS.emission;
+		
+		StartRotation = Icon.transform.localRotation;		
+		EndRotation = Quaternion.FromToRotation(Vector3.forward, Icon.transform.localPosition-PowerZoomTarget.transform.localPosition);
+		
+		StartPosition = Icon.transform.localPosition;
+		EndPosition = StartPosition + new Vector3(0,0,-.25f);
+		
+		MagicMenu = transform.parent.GetComponent<MagicMenu>();
     }
 
     // Update is called once per frame
@@ -36,25 +77,64 @@ public class SectionScript : MonoBehaviour
 	{
 		var t = Icon.transform;
 		var scaleAmount = .05f;
-		if(InTheZone){
+		if(InTheZoneL || InTheZoneR){
 			//Icon.transform.localPosition = new Vector3(0,0,-.5f);
-	    	if(Icon.transform.localPosition.z > FocusSlide){
+	    	//if(Icon.transform.localPosition.z > FocusSlide){
 	    		
-	    		t.localPosition -= new Vector3(0,0,.01f);
-	    	}
+	    	//	t.localPosition -= new Vector3(0,0,.01f);
+	    	//}
 			if(Icon.transform.localScale.x < 2){
 	    		
 				t.localScale += new Vector3(scaleAmount,scaleAmount,scaleAmount);
-	    	}
+			}
+
+			if(SlideI<1f){
+				SlideI+=.03f;
+			}
 		}else{
 			//Icon.transform.localPosition = new Vector3(0,0,0);
-			if(Icon.transform.localPosition.z < 0){
-				t.localPosition += new Vector3(0,0,.01f);
-			}
+			//if(Icon.transform.localPosition.z < 0){
+			//	t.localPosition += new Vector3(0,0,.01f);
+			//}
 			if(Icon.transform.localScale.x > 1){
 	    		
 				t.localScale -= new Vector3(scaleAmount,scaleAmount,scaleAmount);
 			}
-	    }
-    }
+			if(SlideI>0){
+				SlideI-=.03f;
+			}
+		}
+		t.localRotation = Quaternion.Lerp(StartRotation, EndRotation, SlideI);
+		t.localPosition = Vector3.Lerp(StartPosition, EndPosition, SlideI);
+		Emission.rate = SlideI*10;
+	}
+    
+    
+	void OnDrawGizmos()
+	{
+		Gizmos.color = UnityEngine.Color.green;
+		if(transform.parent != null){
+			PowerZoomTarget = transform.parent.Find("PowerZoomTarget").gameObject;
+			Icon = transform.GetChild(0).gameObject;
+			Gizmos.DrawRay(transform.position,Quaternion.FromToRotation(Vector3.forward, Icon.transform.position-PowerZoomTarget.transform.position)*Vector3.back);
+			Gizmos.DrawWireSphere(PowerZoomTarget.transform.position, .01f);
+		}
+		
+		//if(transform.childCount < Magics){
+		//	BuildSections();
+		//}else{
+		//	//foreach(var sec in Sections){
+		//	//	var mf = sec.Find("Icon").GetComponent<MeshFilter>();
+		//	//	Gizmos.DrawMesh(mf.mesh, transform.position);
+		//	//}
+		//}
+		//foreach(var v in Vertices){
+		//	Gizmos.DrawWireSphere(transform.position + v, .01f);
+		//}
+		//Debug.Log(transform.childCount);
+	}
+    
+    
+    
+    
 }
