@@ -56,7 +56,10 @@ public class MagicMenu : MonoBehaviour
 	private List<string> IconFiles = new List<string>();
 	public int Magics;
 	private Material BackCircleMaterial;	
+	public bool Closing;	
 	private List<GameObject> Sections = new List<GameObject>();
+	private List<SectionScript> SectionScripts = new List<SectionScript>();
+	private List<GameObject> ShrinkingIcons = new List<GameObject>();
 	private List<int> Triangles = new List<int>();
 	private List<Vector2> UVs = new List<Vector2>();
 	private List<Vector3> Vertices = new List<Vector3>();
@@ -69,7 +72,13 @@ public class MagicMenu : MonoBehaviour
 		var mr = bc.GetComponent<MeshRenderer>();
 		BackCircleMaterial = mr.sharedMaterial;
 		BackCircleMaterial.SetFloat("Alpha", 0);
-	    //BuildSections();
+		//BuildSections();
+		foreach(Transform t in transform){
+			if(t.name.StartsWith("Section")){
+				SectionScripts.Add(t.GetComponent<SectionScript>());
+				Icons.Add(t.Find("Icon").gameObject);
+			}
+		}
     }
 
 	void FixedUpdate(){
@@ -80,9 +89,34 @@ public class MagicMenu : MonoBehaviour
     void Update()
 	{
 		var a = BackCircleMaterial.GetFloat("Alpha");
-		if(a < .2f){
-			BackCircleMaterial.SetFloat("Alpha", a+.001f);
+		
+		if(!Closing){
+			if(a < .2f){
+				// Reveal menu 
+				BackCircleMaterial.SetFloat("Alpha", a+.001f);
+			}
+		}else{
+			if(a > 0){
+				// Hide menu
+				BackCircleMaterial.SetFloat("Alpha", a-.005f);
+				if(ShrinkingIcons.Count>0){
+					if(ShrinkingIcons[0].transform.localScale.x>0){
+						foreach(var si in ShrinkingIcons){
+					
+							si.transform.localScale -= new Vector3(.002f,.002f,.002f);
+						}
+					}
+					
+				}
+				
+			}else{
+				HandsInputScript.MagicMenuPrelaunchStartTime = Time.time+1;
+				Destroy(gameObject);
+			}
 		}
+		
+		
+		
     }
     
 	void OnDrawGizmos()
@@ -159,7 +193,7 @@ public class MagicMenu : MonoBehaviour
 		
 		var icon = section.transform.Find("Icon").gameObject;		
 		var magicGlowParticle = icon.transform.Find("MagicGlowParticle").gameObject;
-		var ss = section.GetComponent<SectionScript>();		
+		var ss = section.GetComponent<SectionScript>();	
 		ss.IconFileName = Path.GetFileName(IconFiles[index]).Split('.').First();
 		var materialName = string.Format("Assets/Materials/Generated/SectionIcon{0}.mat",ss.IconFileName);
 		var meshName = string.Format("Assets/Meshes/Generated/Section{0}ColliderMesh{1}.asset", index, ss.IconFileName);
@@ -323,4 +357,27 @@ public class MagicMenu : MonoBehaviour
 		return combos;
 	}
 	
+	public void SelectPowers(){
+		Closing = true;
+		//Debug.Log(HandsInputScript.PowerNameL);
+		//Debug.Log(HandsInputScript.PowerNameR);
+		foreach(var ss in SectionScripts){
+			//Debug.Log(ss.IconFileName);
+			if(!(ss.IconFileName == HandsInputScript.PowerNameL) && !(ss.IconFileName == HandsInputScript.PowerNameL)){
+				ShrinkingIcons.Add(ss.transform.Find("Icon").gameObject);
+			}
+		}
+	}
+	
+	
+	public void Dismiss(){
+		Closing = true;
+		ShrinkingIcons = Icons;
+	}
+	
 }
+
+
+
+
+

@@ -27,10 +27,12 @@ public class SectionScript : MonoBehaviour
 
 	void OnCollisionEnter(Collision collision)
 	{
-		if(MagicMenu.HandsInputScript != null){
+		if(MagicMenu != null){
 			if(collision.collider.name == MagicMenu.HandsInputScript.LeftHand.name){
+				MagicMenu.HandsInputScript.PowerNameL = IconFileName;
 				InTheZoneL = true;
 			}else if(collision.collider.name == MagicMenu.HandsInputScript.RightHand.name){
+				MagicMenu.HandsInputScript.PowerNameR = IconFileName;
 				InTheZoneR = true;
 			}
 		}
@@ -42,8 +44,10 @@ public class SectionScript : MonoBehaviour
 	{
 		if(MagicMenu.HandsInputScript != null){
 			if(collisionInfo.collider.name == MagicMenu.HandsInputScript.LeftHand.name){
+				MagicMenu.HandsInputScript.PowerNameL = string.Empty;
 				InTheZoneL = false;
 			}else if(collisionInfo.collider.name == MagicMenu.HandsInputScript.RightHand.name){
+				MagicMenu.HandsInputScript.PowerNameR = string.Empty;
 				InTheZoneR = false;
 			}
 		}
@@ -78,13 +82,7 @@ public class SectionScript : MonoBehaviour
 		var t = Icon.transform;
 		var scaleAmount = .05f;
 		if(InTheZoneL || InTheZoneR){
-			//Icon.transform.localPosition = new Vector3(0,0,-.5f);
-	    	//if(Icon.transform.localPosition.z > FocusSlide){
-	    		
-	    	//	t.localPosition -= new Vector3(0,0,.01f);
-	    	//}
 			if(Icon.transform.localScale.x < 2){
-	    		
 				t.localScale += new Vector3(scaleAmount,scaleAmount,scaleAmount);
 			}
 
@@ -92,10 +90,6 @@ public class SectionScript : MonoBehaviour
 				SlideI+=.03f;
 			}
 		}else{
-			//Icon.transform.localPosition = new Vector3(0,0,0);
-			//if(Icon.transform.localPosition.z < 0){
-			//	t.localPosition += new Vector3(0,0,.01f);
-			//}
 			if(Icon.transform.localScale.x > 1){
 	    		
 				t.localScale -= new Vector3(scaleAmount,scaleAmount,scaleAmount);
@@ -106,7 +100,7 @@ public class SectionScript : MonoBehaviour
 		}
 		t.localRotation = Quaternion.Lerp(StartRotation, EndRotation, SlideI);
 		t.localPosition = Vector3.Lerp(StartPosition, EndPosition, SlideI);
-		Emission.rate = SlideI*10;
+		Emission.rate = SlideI*50;
 	}
     
     
@@ -116,22 +110,13 @@ public class SectionScript : MonoBehaviour
 		if(transform.parent != null){
 			PowerZoomTarget = transform.parent.Find("PowerZoomTarget").gameObject;
 			Icon = transform.GetChild(0).gameObject;
-			Gizmos.DrawRay(transform.position,Quaternion.FromToRotation(Vector3.forward, Icon.transform.position-PowerZoomTarget.transform.position)*Vector3.back);
-			Gizmos.DrawWireSphere(PowerZoomTarget.transform.position, .01f);
+			// From icon to point where menu focuses
+			Gizmos.DrawRay(PowerZoomTarget.transform.position,transform.position);
+			// Focus point
+			Gizmos.color = new UnityEngine.Color(1,0,1);
+			Gizmos.DrawWireSphere(PowerZoomTarget.transform.position, .05f);
 		}
-		
-		//if(transform.childCount < Magics){
-		//	BuildSections();
-		//}else{
-		//	//foreach(var sec in Sections){
-		//	//	var mf = sec.Find("Icon").GetComponent<MeshFilter>();
-		//	//	Gizmos.DrawMesh(mf.mesh, transform.position);
-		//	//}
-		//}
-		//foreach(var v in Vertices){
-		//	Gizmos.DrawWireSphere(transform.position + v, .01f);
-		//}
-		//Debug.Log(transform.childCount);
+
 	}
     
     

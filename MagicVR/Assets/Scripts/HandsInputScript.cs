@@ -27,7 +27,11 @@ public class HandsInputScript : MonoBehaviour
 	public float MagicMenuWarmupTime;
 	
 	public GameObject MagicMenu;
-	private float MagicMenuPrelaunchStartTime = 1f;
+	
+	public string PowerNameL;
+	public string PowerNameR;
+	
+	public float MagicMenuPrelaunchStartTime = 1f;
 	private float WaitTill;
     // Start is called before the first frame update
     void Start()
@@ -43,6 +47,7 @@ public class HandsInputScript : MonoBehaviour
 		var rDismiss = DismissInput.GetState(SteamVR_Input_Sources.RightHand);
 		
 		if(lDismiss || rDismiss){
+			// Cancel
 			CloseMagicMenu();
 		}
 		
@@ -65,7 +70,7 @@ public class HandsInputScript : MonoBehaviour
 						MagicMenuPrelaunchStartTime = Time.time;
 					}else if(Time.time-MagicMenuPrelaunchStartTime > MagicMenuWarmupTime){
 						// Select power
-						CloseMagicMenu();
+						MagicMenu.GetComponent<MagicMenu>().SelectPowers();
 					}
 				}else{
 					MagicMenuPrelaunchStartTime = 0;				
@@ -89,7 +94,7 @@ public class HandsInputScript : MonoBehaviour
 		WaitTill = Time.time + .5f;
 		MagicMenuPrelaunchStartTime = 0;
 		if(MagicMenu != null){
-			Destroy(MagicMenu);
+			MagicMenu.GetComponent<MagicMenu>().Dismiss();
 		}
 	}
 }
