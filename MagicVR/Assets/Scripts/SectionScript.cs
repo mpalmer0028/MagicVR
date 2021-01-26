@@ -23,6 +23,7 @@ public class SectionScript : MonoBehaviour
 	private Vector3 StartPosition;
 	private Vector3 EndPosition;
 	private MagicMenu MagicMenu;
+	private PowerPreviewScript PowerPreviewScript;
 	private float SlideI;
 
 	void OnCollisionEnter(Collision collision)
@@ -74,6 +75,7 @@ public class SectionScript : MonoBehaviour
 		EndPosition = StartPosition + new Vector3(0,0,-.25f);
 		
 		MagicMenu = transform.parent.GetComponent<MagicMenu>();
+		PowerPreviewScript = Icon.transform.GetComponentInChildren<PowerPreviewScript>();
     }
 
     // Update is called once per frame
@@ -87,7 +89,11 @@ public class SectionScript : MonoBehaviour
 			}
 
 			if(SlideI<1f){
+				// Move in
 				SlideI+=.03f;
+				if(PowerPreviewScript != null){
+					PowerPreviewScript.Factor = SlideI;
+				}
 			}
 		}else{
 			if(Icon.transform.localScale.x > 1){
@@ -95,7 +101,11 @@ public class SectionScript : MonoBehaviour
 				t.localScale -= new Vector3(scaleAmount,scaleAmount,scaleAmount);
 			}
 			if(SlideI>0){
+				// Move out
 				SlideI-=.03f;
+				if(PowerPreviewScript != null){
+					PowerPreviewScript.Factor = SlideI;
+				}
 			}
 		}
 		t.localRotation = Quaternion.Lerp(StartRotation, EndRotation, SlideI);
@@ -111,7 +121,7 @@ public class SectionScript : MonoBehaviour
 			PowerZoomTarget = transform.parent.Find("PowerZoomTarget").gameObject;
 			Icon = transform.GetChild(0).gameObject;
 			// From icon to point where menu focuses
-			Gizmos.DrawRay(PowerZoomTarget.transform.position,transform.position);
+			//Gizmos.DrawRay(PowerZoomTarget.transform.position,transform.position);
 			// Focus point
 			Gizmos.color = new UnityEngine.Color(1,0,1);
 			Gizmos.DrawWireSphere(PowerZoomTarget.transform.position, .05f);

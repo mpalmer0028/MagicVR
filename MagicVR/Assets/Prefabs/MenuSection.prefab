@@ -365,6 +365,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7963043058212825670}
     m_Modifications:
+    - target: {fileID: 8253904165752076709, guid: 379aa24c414781d4ebaf497a8994107c,
+        type: 3}
+      propertyPath: ShapeModule.m_Rotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253904165752076709, guid: 379aa24c414781d4ebaf497a8994107c,
+        type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253904165752076709, guid: 379aa24c414781d4ebaf497a8994107c,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8253904165752076710, guid: 379aa24c414781d4ebaf497a8994107c,
         type: 3}
       propertyPath: m_Name

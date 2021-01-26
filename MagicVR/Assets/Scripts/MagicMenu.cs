@@ -38,6 +38,7 @@ public class MagicMenu : MonoBehaviour
 	/// </summary>
 	public GameObject PowerZoomTarget;
 	
+	public float PreviewDistanceBehindIcon = .02f;
 	
 	/// <summary>
 	/// Prefab of a section
@@ -195,9 +196,13 @@ public class MagicMenu : MonoBehaviour
 		var magicGlowParticle = icon.transform.Find("MagicGlowParticle").gameObject;
 		var ss = section.GetComponent<SectionScript>();	
 		ss.IconFileName = Path.GetFileName(IconFiles[index]).Split('.').First();
+		
+		
+		
 		var materialName = string.Format("Assets/Materials/Generated/SectionIcon{0}.mat",ss.IconFileName);
 		var meshName = string.Format("Assets/Meshes/Generated/Section{0}ColliderMesh{1}.asset", index, ss.IconFileName);
 		var textureName = string.Format("Assets/Icons/100ppi/{0}.png",ss.IconFileName);
+		
 		Icons.Add(icon);
 		IQueryable<Vector3> vertsQ = verts.AsQueryable();
 		var iconLocation = new Vector3(vertsQ.Average(v => v.x), vertsQ.Average(v => v.y), 0f);
@@ -216,6 +221,17 @@ public class MagicMenu : MonoBehaviour
 		render.sharedMaterial = material;
 
 		icon.transform.localPosition = iconLocation;
+		
+		string previewPath = "Assets/Powers/IconPreviews/" + ss.IconFileName + ".prefab";
+
+		GameObject previewPrefab = (GameObject)AssetDatabase.LoadAssetAtPath(previewPath, typeof(GameObject));
+		
+		if(previewPrefab != null){
+			GameObject preview = (GameObject)PrefabUtility.InstantiatePrefab(previewPrefab);
+			preview.transform.parent = icon.transform;
+			preview.transform.localPosition =  new Vector3(0,0,PreviewDistanceBehindIcon);
+			
+		}
 		
 		var mc = section.GetComponent<MeshCollider>();
 		var mf = icon.GetComponent<MeshFilter>();
