@@ -70,6 +70,16 @@ public class PowerPreviewScript : MonoBehaviour
 	private ParticleSystem ClubsPS;
 	private float ClubsEmission;
 	
+	// Whip
+	private ParticleSystem RopePS;
+	private float RopeEmission;
+	
+	// Bow
+	private ParticleSystem ArrowsPS;
+	private float ArrowsEmission;
+	private ParticleSystem ShurikensPS;
+	private float ShurikensEmission;
+	
 	//// 
 	//private ParticleSystem PS;
 	//private float Emission;
@@ -130,6 +140,16 @@ public class PowerPreviewScript : MonoBehaviour
 				ClubsPS = transform.Find("Clubs").GetComponent<ParticleSystem>();
 				ClubsEmission = ClubsPS.emissionRate;
 				break;
+			case "Whip":
+				RopePS = transform.Find("Rope").GetComponent<ParticleSystem>();
+				RopeEmission = RopePS.emissionRate;
+				break;
+			case "Bow":
+				ArrowsPS = transform.Find("Arrows").GetComponent<ParticleSystem>();
+				ArrowsEmission = ArrowsPS.emissionRate;
+				ShurikensPS = transform.Find("Shurikens").GetComponent<ParticleSystem>();
+				ShurikensEmission = ShurikensPS.emissionRate;
+				break;
 			//case "":
 			//	PS = transform.Find("").GetComponent<ParticleSystem>();
 			//	Emission = PS.emissionRate;
@@ -188,6 +208,15 @@ public class PowerPreviewScript : MonoBehaviour
 				HammersPS.emissionRate = Mathf.Lerp(0, HammersEmission, Factor);
 				FistPS.emissionRate = Mathf.Lerp(0, FistEmission, Factor);
 				ClubsPS.emissionRate = Mathf.Lerp(0, ClubsEmission, Factor);
+				break;
+				
+			case "Whip":
+				RopePS.emissionRate = Mathf.Lerp(0, RopeEmission, Factor);
+				break;
+				
+			case "Bow":
+				ArrowsPS.emissionRate = Mathf.Lerp(0, ArrowsEmission, Factor);
+				ShurikensPS.emissionRate = Mathf.Lerp(0, ShurikensEmission, Factor);
 				break;
 				
 			//case "":
