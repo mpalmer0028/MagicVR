@@ -41,6 +41,15 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 		//var localRotation = primaryPowerTransform.localRotation;		
 		var primaryPower = Instantiate(primaryPowerTransform.gameObject,primaryHandSpawn.transform);
 		var offPower = Instantiate(offPowerTransform.gameObject,offHandSpawn.transform);
+		
+		if(powerSystemScript.LeftHanded){
+			var pt = primaryPower.transform;
+			var pp = pt.localPosition;
+			pt.localPosition = new Vector3(pp.x*-1,pp.y,pp.z);
+			var ot = offPower.transform;
+			var op = ot.localPosition;
+			ot.localPosition = new Vector3(op.x*-1,op.y,op.z);
+		}
 		primaryPower.active = true;
 		offPower.active = true;
 		
@@ -51,11 +60,11 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 		var primaryHandSpawn = powerSystemScript.LeftHanded ? powerSystemScript.LeftHandSpawn : powerSystemScript.RightHandSpawn;
 		var offHandSpawn = powerSystemScript.LeftHanded ? powerSystemScript.RightHandSpawn : powerSystemScript.LeftHandSpawn;
 		
-		var primaryPowerTransform = primaryHandSpawn.transform.Find("PrimaryHand");
-		var offPowerTransform = offHandSpawn.transform.Find("OffHand");
+		var primaryPowerTransform = primaryHandSpawn.transform.GetChild(0);
+		var offPowerTransform = offHandSpawn.transform.GetChild(0);
 		
-		primaryPowerTransform.SetParent(transform);
-		offPowerTransform.SetParent(transform);
+		Destroy(primaryPowerTransform.gameObject);
+		Destroy(offPowerTransform.gameObject);
 	}
     
 }

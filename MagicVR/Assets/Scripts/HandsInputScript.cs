@@ -54,37 +54,43 @@ public class HandsInputScript : MonoBehaviour
 		
 		if(lDismiss || rDismiss){
 			// Cancel
-			CloseMagicMenu();
+			if(PowerSystem.PowerName != string.Empty){
+				// Remove power
+				PowerSystem.PowerName = string.Empty;
+			}else{
+				CloseMagicMenu();
+			}			
 		}
 		
 		if(WaitTill < Time.time){
-			if(MagicMenu == null){				
-				if(lTrigger > 0 || rTrigger > 0){
-					// No action started
-					if(MagicMenuPrelaunchStartTime == 0){
-						MagicMenuPrelaunchStartTime = Time.time;
-					}else if(Time.time-MagicMenuPrelaunchStartTime > MagicMenuWarmupTime){
-						
-						LaunchMagicMenu();
+			// No power
+			if(PowerSystem.PowerName == string.Empty){
+				if(MagicMenu == null){				
+					if(lTrigger > 0 || rTrigger > 0){
+						// No action started
+						if(MagicMenuPrelaunchStartTime == 0){
+							MagicMenuPrelaunchStartTime = Time.time;
+						}else if(Time.time-MagicMenuPrelaunchStartTime > MagicMenuWarmupTime){							
+							LaunchMagicMenu();
+						}
+					
+					}else{
+						MagicMenuPrelaunchStartTime = 0;				
 					}
-				
 				}else{
-					MagicMenuPrelaunchStartTime = 0;				
+					if(lTrigger > 0 || rTrigger > 0){
+					
+						if(MagicMenuPrelaunchStartTime == 0){
+							MagicMenuPrelaunchStartTime = Time.time;
+						}else if(Time.time-MagicMenuPrelaunchStartTime > MagicMenuWarmupTime){
+							SelectPower();						
+						}
+					}else{
+						MagicMenuPrelaunchStartTime = 0;				
+					}										
 				}
 			}else{
-				if(lTrigger > 0 || rTrigger > 0){
-				
-					if(MagicMenuPrelaunchStartTime == 0){
-						MagicMenuPrelaunchStartTime = Time.time;
-					}else if(Time.time-MagicMenuPrelaunchStartTime > MagicMenuWarmupTime){
-						// Select power
-						SelectPower();						
-					}
-				}else{
-					MagicMenuPrelaunchStartTime = 0;				
-				}
-				
-				
+				// Power being used
 			}
 		}
 		

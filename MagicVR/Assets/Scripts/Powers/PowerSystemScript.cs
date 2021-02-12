@@ -25,6 +25,8 @@ public class PowerSystemScript : MonoBehaviour
 	}
 	
 	private string _PowerName = string.Empty;
+	private GameObject PowerObject;
+	private IComboPower ComboPowerScript;
 	
     // Start is called before the first frame update
     void Start()
@@ -39,17 +41,26 @@ public class PowerSystemScript : MonoBehaviour
     }
     
 	public void SetPower(string power){
-		PowerCombinations combo;
-		if(Enum.TryParse(power, out combo)){
-			Debug.Log(power);
-			var prefab = Resources.Load<GameObject>("HandObjects/"+power);
-			Debug.Assert(prefab != null);
-			if(prefab != null){
-				var powerObj = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
-				var comboPowerScript = powerObj.GetComponent<IComboPower>();
-				comboPowerScript.ActivatePower(this);
-			}			
+		if(power == string.Empty){
+			if(PowerObject != null){
+				ComboPowerScript.RemovePower(this);
+				ComboPowerScript = null;
+				Destroy(PowerObject);
+			}
+		}else{
+			PowerCombinations combo;
+			if(Enum.TryParse(power, out combo)){
+				//Debug.Log(power);
+				var prefab = Resources.Load<GameObject>("HandObjects/"+power);
+				Debug.Assert(prefab != null);
+				if(prefab != null){
+					PowerObject = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
+					ComboPowerScript = PowerObject.GetComponent<IComboPower>();
+					ComboPowerScript.ActivatePower(this);
+				}			
+			}
 		}
+		
 	}
 	
 	public void BuildCombinations(){
