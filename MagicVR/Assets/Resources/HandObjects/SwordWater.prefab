@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6697378848170646077}
-  - component: {fileID: -4231498395162541767}
+  - component: {fileID: 5924830570729824888}
   m_Layer: 0
   m_Name: SwordWater
   m_TagString: Untagged
@@ -63,7 +63,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4231498395162541767
+--- !u!114 &5924830570729824888
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72,9 +72,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2524024644387063546}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afa83f05b958cfe4493fea6365795c13, type: 3}
+  m_Script: {fileID: 11500000, guid: 4a733f62b98341d44845a082f134ce87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PrimaryPower: {fileID: 0}
+  OffPower: {fileID: 0}
 --- !u!1001 &4580901413529428480
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86,21 +88,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 117854321144062629, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 117854321144062629, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 117854321144062629, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 117854321144062629, guid: b501d8f3cb447844787d4ccce5cc0074,
         type: 3}
@@ -152,6 +139,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 550035987421907210, guid: b501d8f3cb447844787d4ccce5cc0074,
+        type: 3}
+      propertyPath: EmissionModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 786268796237723679, guid: b501d8f3cb447844787d4ccce5cc0074,
         type: 3}
       propertyPath: m_Name
@@ -187,11 +179,6 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.z
       value: -0.000000016763813
       objectReference: {fileID: 0}
-    - target: {fileID: 1888840499333789004, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 0.4
-      objectReference: {fileID: 0}
     - target: {fileID: 1894291959658106023, guid: b501d8f3cb447844787d4ccce5cc0074,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -206,11 +193,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConnectedAnchor.z
       value: -0.00000000931324
-      objectReference: {fileID: 0}
-    - target: {fileID: 2741734162368305364, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 2744256861611098257, guid: b501d8f3cb447844787d4ccce5cc0074,
         type: 3}
@@ -227,24 +209,15 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.z
       value: 0.0000000055879354
       objectReference: {fileID: 0}
-    - target: {fileID: 2948041584715178400, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2989953384598251838, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3786262948230140639, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 0.4
-      objectReference: {fileID: 0}
     - target: {fileID: 4877198196766582797, guid: b501d8f3cb447844787d4ccce5cc0074,
         type: 3}
-      propertyPath: m_Enabled
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 243078391499754788, guid: ec12f7772c03e4c4c9e4c2f1643595ad,
+        type: 2}
+    - target: {fileID: 4877198196766582797, guid: b501d8f3cb447844787d4ccce5cc0074,
+        type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5667877686522341931, guid: b501d8f3cb447844787d4ccce5cc0074,
@@ -291,11 +264,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConnectedAnchor.z
       value: -0.000000013038527
-      objectReference: {fileID: 0}
-    - target: {fileID: 8800785635200749248, guid: b501d8f3cb447844787d4ccce5cc0074,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b501d8f3cb447844787d4ccce5cc0074, type: 3}

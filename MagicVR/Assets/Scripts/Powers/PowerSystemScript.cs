@@ -6,9 +6,12 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Text;
+using Valve.VR;
+using Valve.VR.InteractionSystem;
 
 public class PowerSystemScript : MonoBehaviour
 {
+	
 	public GameObject DefaultPowerPrefab;	
 	
 	public bool LeftHanded;
@@ -16,31 +19,61 @@ public class PowerSystemScript : MonoBehaviour
 	public GameObject LeftHandSpawn;
 	public GameObject RightHandSpawn;
 	
+	[SerializeField]
+	private string _PowerName;
 	public string PowerName {
-		get { return _PowerName;}
+		get { 			
+			return _PowerName;
+		}
 		set { 
 			_PowerName = value;
 			SetPower(value);
 		}
 	}
+	public PowerCombinations ComboToSet;
 	
-	private string _PowerName = string.Empty;
+	private float PrimaryTrigger;
+	private float OffTrigger;
+	
 	private GameObject PowerObject;
 	private IComboPower ComboPowerScript;
-	
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	 
+	public void Start(){
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
-	public void SetPower(string power){
+	}
+	public float LeftTrigger{
+		get { return LeftHanded ? PrimaryTrigger : RightTrigger;}
+		set { 
+			if(LeftHanded){
+				
+				PrimaryTrigger = value;
+			}else{
+				OffTrigger = value;
+			}
+			//Debug.Log("L");
+			ComboPowerScript.UpdatePowerTrigger(value, !LeftHanded);
+		}
+	}
+	
+	public float RightTrigger{
+		get { return LeftHanded ? OffTrigger : PrimaryTrigger;}
+		set { 
+			if(LeftHanded){
+				OffTrigger = value;				
+			}else{
+				PrimaryTrigger = value;
+			}
+			//Debug.Log("R");
+			ComboPowerScript.UpdatePowerTrigger(value, LeftHanded);
+		}
+	}
+		
+	//public void SetPower(PowerCombinations power){
+	//	SetPower(Enum.GetName(typeof(PowerCombinations),power));
+	//}
+	
+	private void SetPower(string power){
+		//Debug.Log(power);
 		if(power == string.Empty){
 			if(PowerObject != null){
 				ComboPowerScript.RemovePower(this);
@@ -50,9 +83,9 @@ public class PowerSystemScript : MonoBehaviour
 		}else{
 			PowerCombinations combo;
 			if(Enum.TryParse(power, out combo)){
-				//Debug.Log(power);
+				
 				var prefab = Resources.Load<GameObject>("HandObjects/"+power);
-				Debug.Assert(prefab != null);
+				//Debug.Assert(prefab != null);
 				if(prefab != null){
 					PowerObject = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
 					ComboPowerScript = PowerObject.GetComponent<IComboPower>();

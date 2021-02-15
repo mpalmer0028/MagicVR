@@ -339,7 +339,19 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1902600604, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+      propertyPath: ComboToSet
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902600604, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: LeftHanded
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902600604, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+      propertyPath: StartCombo
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902600604, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+      propertyPath: StartComboEnabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2370950918993642304, guid: dc06161b6d97feb419f45f03b62e14b9,
@@ -473,7 +485,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 2.9846536e-38, y: 3.67342e-40, z: 4.867281e-39, w: 2.015625}
+  m_BoundingSphereOverride: {x: 0, y: 4.2521e-41, z: 0, w: -7.25}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -654,7 +666,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 6.630523e-38, y: 9.1835e-41, z: 6.979498e-39, w: 9.1835e-41}
+  m_BoundingSphereOverride: {x: 0, y: 4.122e-41, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0

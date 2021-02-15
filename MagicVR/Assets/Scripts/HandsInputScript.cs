@@ -41,8 +41,9 @@ public class HandsInputScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-	    WaitTill = Time.time;
+	    WaitTill = Time.time+1;
 	    PowerSystem = gameObject.GetComponent<PowerSystemScript>();
+	    
     }
 
 	void FixedUpdate()
@@ -65,6 +66,7 @@ public class HandsInputScript : MonoBehaviour
 		if(WaitTill < Time.time){
 			// No power
 			if(PowerSystem.PowerName == string.Empty){
+				//Debug.Log(PowerSystem.PowerName);
 				if(MagicMenu == null){				
 					if(lTrigger > 0 || rTrigger > 0){
 						// No action started
@@ -91,6 +93,15 @@ public class HandsInputScript : MonoBehaviour
 				}
 			}else{
 				// Power being used
+				if(PowerSystem.LeftTrigger != lTrigger){
+					PowerSystem.LeftTrigger = lTrigger;
+				}
+				
+				if(PowerSystem.RightTrigger != rTrigger){
+					PowerSystem.RightTrigger = rTrigger;
+				}
+				
+				
 			}
 		}
 		

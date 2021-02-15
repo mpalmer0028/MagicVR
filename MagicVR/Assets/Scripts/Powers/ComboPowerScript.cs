@@ -13,17 +13,20 @@ interface IComboPower
 {
 	void ActivatePower(PowerSystemScript powerSystemScript);
 	void RemovePower(PowerSystemScript powerSystemScript);
-	
+	void UpdatePowerTrigger(float triggerAmount, bool offHand);
 }
 
 public class ComboPowerScript : MonoBehaviour, IComboPower
 {
+	public GameObject PrimaryPower;
+	public GameObject OffPower;
+	
     // Start is called before the first frame update
-    void Start()
+	public virtual void Start()
     {
 	    transform.Find("PrimaryHand").gameObject.active = false;
 	    transform.Find("OffHand").gameObject.active = false;
-    }
+    }    	
     
 	public void ActivatePower(PowerSystemScript powerSystemScript)
 	{
@@ -39,32 +42,29 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 		
 		//var localPosition = primaryPowerTransform.localPosition;
 		//var localRotation = primaryPowerTransform.localRotation;		
-		var primaryPower = Instantiate(primaryPowerTransform.gameObject,primaryHandSpawn.transform);
-		var offPower = Instantiate(offPowerTransform.gameObject,offHandSpawn.transform);
+		PrimaryPower = Instantiate(primaryPowerTransform.gameObject,primaryHandSpawn.transform);
+		OffPower = Instantiate(offPowerTransform.gameObject,offHandSpawn.transform);
 		
 		if(powerSystemScript.LeftHanded){
-			var pt = primaryPower.transform;
+			var pt = PrimaryPower.transform;
 			var pp = pt.localPosition;
 			pt.localPosition = new Vector3(pp.x*-1,pp.y,pp.z);
-			var ot = offPower.transform;
+			var ot = OffPower.transform;
 			var op = ot.localPosition;
 			ot.localPosition = new Vector3(op.x*-1,op.y,op.z);
 		}
-		primaryPower.active = true;
-		offPower.active = true;
+		PrimaryPower.active = true;
+		OffPower.active = true;
 		
 	}
 
 	public void RemovePower(PowerSystemScript powerSystemScript)
 	{
-		var primaryHandSpawn = powerSystemScript.LeftHanded ? powerSystemScript.LeftHandSpawn : powerSystemScript.RightHandSpawn;
-		var offHandSpawn = powerSystemScript.LeftHanded ? powerSystemScript.RightHandSpawn : powerSystemScript.LeftHandSpawn;
-		
-		var primaryPowerTransform = primaryHandSpawn.transform.GetChild(0);
-		var offPowerTransform = offHandSpawn.transform.GetChild(0);
-		
-		Destroy(primaryPowerTransform.gameObject);
-		Destroy(offPowerTransform.gameObject);
+		Destroy(PrimaryPower);
+		Destroy(OffPower);
 	}
-    
+	
+	public virtual void UpdatePowerTrigger(float triggerAmount, bool offHand){
+
+	}
 }
