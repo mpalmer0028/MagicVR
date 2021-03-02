@@ -11,6 +11,7 @@ interface IPowerBase
 
 interface IComboPower
 {
+	GameObject VisionTarget {get;set;}
 	void ActivatePower(PowerSystemScript powerSystemScript);
 	void RemovePower(PowerSystemScript powerSystemScript);
 	void UpdatePowerTrigger(float triggerAmount, bool offHand);
@@ -20,6 +21,10 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 {
 	public GameObject PrimaryPower;
 	public GameObject OffPower;
+	
+	[SerializeField]
+	private GameObject _VisionTarget;
+	public GameObject VisionTarget{get{return _VisionTarget;}set{_VisionTarget=value;}}
 	
     // Start is called before the first frame update
 	public virtual void Start()

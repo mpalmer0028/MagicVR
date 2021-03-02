@@ -1,4 +1,4 @@
-public enum PowerCombinations { BowElectric, BowFire, BowHammer, BowIce, BowSword, BowWater, BowWhip, ElectricFire, ElectricHammer, ElectricIce, ElectricSword, ElectricWater, ElectricWhip, FireHammer, FireIce, FireSword, FireWater, FireWhip, HammerIce, HammerSword, HammerWater, HammerWhip, IceSword, IceWater, IceWhip, SwordWater, SwordWhip, WaterWhip } 
+public enum PowerCombinations { BowElectric, BowFire, BowHammer, BowNecro, BowSword, BowWater, BowWhip, ElectricFire, ElectricHammer, ElectricNecro, ElectricSword, ElectricWater, ElectricWhip, FireHammer, FireNecro, FireSword, FireWater, FireWhip, HammerNecro, HammerSword, HammerWater, HammerWhip, NecroSword, NecroWater, NecroWhip, SwordWater, SwordWhip, WaterWhip } 
 //case PowerCombinations.BowElectric:
 //	
 //	break;
@@ -8,7 +8,7 @@ public enum PowerCombinations { BowElectric, BowFire, BowHammer, BowIce, BowSwor
 //case PowerCombinations.BowHammer:
 //	
 //	break;
-//case PowerCombinations.BowIce:
+//case PowerCombinations.BowNecro:
 //	
 //	break;
 //case PowerCombinations.BowSword:
@@ -26,7 +26,7 @@ public enum PowerCombinations { BowElectric, BowFire, BowHammer, BowIce, BowSwor
 //case PowerCombinations.ElectricHammer:
 //	
 //	break;
-//case PowerCombinations.ElectricIce:
+//case PowerCombinations.ElectricNecro:
 //	
 //	break;
 //case PowerCombinations.ElectricSword:
@@ -41,7 +41,7 @@ public enum PowerCombinations { BowElectric, BowFire, BowHammer, BowIce, BowSwor
 //case PowerCombinations.FireHammer:
 //	
 //	break;
-//case PowerCombinations.FireIce:
+//case PowerCombinations.FireNecro:
 //	
 //	break;
 //case PowerCombinations.FireSword:
@@ -53,7 +53,7 @@ public enum PowerCombinations { BowElectric, BowFire, BowHammer, BowIce, BowSwor
 //case PowerCombinations.FireWhip:
 //	
 //	break;
-//case PowerCombinations.HammerIce:
+//case PowerCombinations.HammerNecro:
 //	
 //	break;
 //case PowerCombinations.HammerSword:
@@ -65,13 +65,13 @@ public enum PowerCombinations { BowElectric, BowFire, BowHammer, BowIce, BowSwor
 //case PowerCombinations.HammerWhip:
 //	
 //	break;
-//case PowerCombinations.IceSword:
+//case PowerCombinations.NecroSword:
 //	
 //	break;
-//case PowerCombinations.IceWater:
+//case PowerCombinations.NecroWater:
 //	
 //	break;
-//case PowerCombinations.IceWhip:
+//case PowerCombinations.NecroWhip:
 //	
 //	break;
 //case PowerCombinations.SwordWater:

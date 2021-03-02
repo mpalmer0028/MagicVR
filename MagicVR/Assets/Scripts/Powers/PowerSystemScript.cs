@@ -13,6 +13,7 @@ public class PowerSystemScript : MonoBehaviour
 {
 	
 	public GameObject DefaultPowerPrefab;	
+	public GameObject VisionTarget;	
 	
 	public bool LeftHanded;
 	
@@ -89,6 +90,7 @@ public class PowerSystemScript : MonoBehaviour
 				if(prefab != null){
 					PowerObject = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
 					ComboPowerScript = PowerObject.GetComponent<IComboPower>();
+					ComboPowerScript.VisionTarget = VisionTarget;
 					ComboPowerScript.ActivatePower(this);
 				}			
 			}

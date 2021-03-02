@@ -6,6 +6,9 @@ public class SwordFishScript : MonoBehaviour
 {
 	public ParticleSystem WaterPS;
 	public AudioSource WaterAudioSource;
+	public Rigidbody[] JointRigidbodys;
+	public Rigidbody TipRigidbody;
+	
 	
     // Start is called before the first frame update
     void Start()

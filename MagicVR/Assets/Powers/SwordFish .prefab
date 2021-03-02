@@ -68,6 +68,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaterPS: {fileID: 550035987421907210}
   WaterAudioSource: {fileID: 4877198196766582797}
+  JointRigidbodys:
+  - {fileID: 2244229441372984601}
+  - {fileID: 5191962836859216605}
+  - {fileID: 755636654041106192}
+  - {fileID: 713883883554305462}
+  - {fileID: 1020919668878496177}
+  - {fileID: 2474126994279967558}
+  - {fileID: 3058607305990691888}
 --- !u!1 &954127821276840767
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,7 +183,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 5.2550843e-15, y: 0.24999976, z: -0.0000000093132435}
+  m_ConnectedAnchor: {x: 1.8112055e-14, y: 0.25, z: -0.00000000931324}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -349,7 +357,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.175, z: 0.4}
+  m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3802688796071541573
 GameObject:
@@ -396,7 +404,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.175, z: 0.4}
+  m_Size: {x: 0.2, y: 0.2, z: 0.3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &755636654041106192
 Rigidbody:
@@ -425,7 +433,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 6.2009954e-14, y: 0.24999994, z: -0.00000010989607}
+  m_ConnectedAnchor: {x: -1.75357e-15, y: 0.25, z: 0.000000009313219}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -554,7 +562,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.175, z: 0.4}
+  m_Size: {x: 0.2, y: 0.2, z: 0.35}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2474126994279967558
 Rigidbody:
@@ -583,7 +591,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 7.357114e-15, y: 0.24999973, z: -0.0000000130385285}
+  m_ConnectedAnchor: {x: 1.787522e-14, y: 0.24999997, z: -0.000000013038527}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -712,7 +720,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.175, z: 0.4}
+  m_Size: {x: 0.2, y: 0.2, z: 0.35}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &713883883554305462
 Rigidbody:
@@ -741,7 +749,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 4.309166e-14, y: 0.24999988, z: -0.00000007636846}
+  m_ConnectedAnchor: {x: 1.5299517e-14, y: 0.25, z: -0.000000016763813}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -870,7 +878,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.175, z: 0.4}
+  m_Size: {x: 0.2, y: 0.2, z: 0.4}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1020919668878496177
 Rigidbody:
@@ -899,7 +907,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 8.408125e-15, y: 0.24999985, z: -0.000000014901168}
+  m_ConnectedAnchor: {x: 1.6587367e-14, y: 0.2500001, z: -0.000000014901167}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -1029,7 +1037,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.175, z: 0.4}
+  m_Size: {x: 0.2, y: 0.2, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &5191962836859216605
 Rigidbody:
@@ -1058,7 +1066,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -6.8996377e-14, y: 0.24999999, z: 0.000000109896064}
+  m_ConnectedAnchor: {x: 2.3320702e-15, y: 0.25, z: -0.0000000018626451}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -1183,7 +1191,8 @@ AudioSource:
   m_GameObject: {fileID: 5790494661048528582}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243078391499754788, guid: ec12f7772c03e4c4c9e4c2f1643595ad,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: d2d138aa3e44c4c41aa40e9d99abb1ab, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -1230,7 +1239,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1451,7 +1460,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -5.028549e-14, y: 0.000000029802322, z: 0.00000008009374}
+  m_ConnectedAnchor: {x: -3.5150798e-15, y: 6.843248e-25, z: 0.0000000055879354}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -1638,7 +1647,7 @@ PrefabInstance:
     - target: {fileID: 7478338405929680200, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
       propertyPath: scalingMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7478338405929680200, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
@@ -1648,6 +1657,11 @@ PrefabInstance:
     - target: {fileID: 7478338405929680200, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
       propertyPath: ColorModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478338405929680200, guid: f9032db418374e941b6956cedac8f0c2,
+        type: 3}
+      propertyPath: EmissionModule.enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7478338405929680200, guid: f9032db418374e941b6956cedac8f0c2,
