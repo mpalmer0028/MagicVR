@@ -80,6 +80,13 @@ public class PowerPreviewScript : MonoBehaviour
 	private ParticleSystem ShurikensPS;
 	private float ShurikensEmission;
 	
+	
+	// Necro
+	private ParticleSystem BonesPS;
+	private float BonesEmission;
+	private ParticleSystem SpookDustPS;
+	private float SpookDustEmission;
+	
 	//// 
 	//private ParticleSystem PS;
 	//private float Emission;
@@ -150,6 +157,12 @@ public class PowerPreviewScript : MonoBehaviour
 				ShurikensPS = transform.Find("Shurikens").GetComponent<ParticleSystem>();
 				ShurikensEmission = ShurikensPS.emissionRate;
 				break;
+			case "Necro":
+				BonesPS = transform.Find("Bones").GetComponent<ParticleSystem>();
+				BonesEmission = BonesPS.emissionRate;
+				SpookDustPS = transform.Find("SpookDust").GetComponent<ParticleSystem>();
+				SpookDustEmission = SpookDustPS.emissionRate;
+				break;
 			//case "":
 			//	PS = transform.Find("").GetComponent<ParticleSystem>();
 			//	Emission = PS.emissionRate;
@@ -217,6 +230,11 @@ public class PowerPreviewScript : MonoBehaviour
 			case "Bow":
 				ArrowsPS.emissionRate = Mathf.Lerp(0, ArrowsEmission, Factor);
 				ShurikensPS.emissionRate = Mathf.Lerp(0, ShurikensEmission, Factor);
+				break;
+				
+			case "Necro":
+				BonesPS.emissionRate = Mathf.Lerp(0, BonesEmission, Factor);
+				SpookDustPS.emissionRate = Mathf.Lerp(0, SpookDustEmission, Factor);
 				break;
 				
 			//case "":

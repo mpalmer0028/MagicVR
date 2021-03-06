@@ -352,6 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultPowerPrefab: {fileID: 7574812564651970095, guid: 3b1c2fb36d5c023429c3239e099e7d28,
     type: 3}
+  VisionTarget: {fileID: 340865164020443078}
   LeftHanded: 1
   LeftHandSpawn: {fileID: 8545969969413686406}
   RightHandSpawn: {fileID: 4340545384416162667}

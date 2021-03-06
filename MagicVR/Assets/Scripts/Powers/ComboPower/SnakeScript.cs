@@ -8,7 +8,7 @@ public class SnakeScript : MonoBehaviour
 	public Transform Target;
 	public GameObject Head;
 	public float CorrectionSpeed = 1000;
-	public float Push = 0.2f;
+	public float Push = 0.5f;
 	public Vector3 RotationCorrection = new Vector3(90,0,0);
 	public List<Transform> NeckTransforms;
 	
@@ -28,14 +28,14 @@ public class SnakeScript : MonoBehaviour
 	    if(Target != null){
 	    	//WS.Wiggling = true;
 	    	
-	    	//Head.transform.LookAt(Target.transform, Vector3.up);
-	    	//Head.transform.rotation = Quaternion.LookRotation(target.position - transform.position);
-	    	var qTo = Quaternion.LookRotation(Target.position - transform.position);
+	    	//Head.transform.LookAt(Target.transform);
+	    	//Head.transform.rotation *= Quaternion.LookRotation(target.position - transform.position);
+	    	var qTo = Quaternion.LookRotation(Target.position - Head.transform.position);
 		    qTo = Quaternion.Slerp(transform.rotation, qTo, CorrectionSpeed * Time.deltaTime)*Quaternion.Euler(RotationCorrection);
 	    	var rb = Head.GetComponent<Rigidbody>();
 	    	rb.MoveRotation(qTo);
-	    	
-		    rb.AddForce((Target.position - transform.position)*Push, ForceMode.Acceleration);
+	    	//Head.transform.position += (Target.position - transform.position).normalized*.01f;
+		    rb.AddForce((Target.position - Head.transform.position).normalized*Push, ForceMode.Force);
 	    }else{
 	    	//WS.Wiggling = false;
 	    }
@@ -53,8 +53,8 @@ public class SnakeScript : MonoBehaviour
 			bcHead = Head.gameObject.AddComponent(typeof(BoxCollider)) as BoxCollider;
 		}
 				
-		bcHead.center = new Vector3(0,0.0008f,0.00005f);
-		bcHead.size = new Vector3(0.0008f,0.0018f,0.0005f);
+		bcHead.center = new Vector3(0,0.00075f,0);
+		bcHead.size = new Vector3(0.0008f,0.0015f,0.0005f);
 		//bc.material = PhysicMaterial
 			
 		// Rigidbody 
@@ -62,10 +62,17 @@ public class SnakeScript : MonoBehaviour
 		if(rbHead == null){
 			rbHead = Head.AddComponent(typeof(Rigidbody)) as Rigidbody;
 		}
+		rbHead.mass = 0.1f;
+		rbHead.useGravity = false;
 		
+		//WiggleScript
+		WS = GetComponent<WiggleScript>();
+		if(WS == null){
+			WS = gameObject.AddComponent(typeof(WiggleScript)) as WiggleScript;
+		}
 		Transform iNeckT = rig.Find("Neck.007");
 		NeckTransforms = new List<Transform>{Head.transform};
-		
+		var rbs = new List<Rigidbody>();
 		while(((Transform)iNeckT).name != "Neck.000_end")
 		{
 			
@@ -78,7 +85,7 @@ public class SnakeScript : MonoBehaviour
 			}
 				
 			bc.center = new Vector3(0,0.00105f,0);
-			bc.size = new Vector3(0.0005f,0.0021f,0.0005f);
+			bc.size = new Vector3(0.0005f,0.0015f,0.0005f);
 			//bc.material = PhysicMaterial
 			
 			// Rigidbody 
@@ -89,6 +96,9 @@ public class SnakeScript : MonoBehaviour
 				
 			rb.mass = .01f;
 			rb.angularDrag = .02f;
+			rb.useGravity = false;
+			
+			rbs.Add(rb);
 			
 			// Config joint 
 			var cj = ((Transform)iNeckT).gameObject.GetComponent<ConfigurableJoint>();
@@ -100,28 +110,30 @@ public class SnakeScript : MonoBehaviour
 								
 			if(iNeckT.name != "Neck.007"){
 				
-				cj.xMotion = ConfigurableJointMotion.Locked;
-				cj.yMotion = ConfigurableJointMotion.Locked;
-				cj.zMotion = ConfigurableJointMotion.Locked;
-				cj.angularXMotion = ConfigurableJointMotion.Limited;
-				cj.angularYMotion = ConfigurableJointMotion.Limited;
-				cj.angularZMotion = ConfigurableJointMotion.Limited;
 				
-				cj.lowAngularXLimit = new SoftJointLimit{limit = -45f};
-				cj.highAngularXLimit = new SoftJointLimit{limit = -45f};
-				cj.angularYLimit = new SoftJointLimit{limit = 10f};
-				cj.angularZLimit = new SoftJointLimit{limit = 45f};
 			}else{
 				cj.connectedBody = Head.GetComponent<Rigidbody>();
 			}
 
 			
 			iNeckT = iNeckT.GetChild(0);
-			
+			cj.xMotion = ConfigurableJointMotion.Locked;
+			cj.yMotion = ConfigurableJointMotion.Locked;
+			cj.zMotion = ConfigurableJointMotion.Locked;
+			cj.angularXMotion = ConfigurableJointMotion.Limited;
+			cj.angularYMotion = ConfigurableJointMotion.Limited;
+			cj.angularZMotion = ConfigurableJointMotion.Limited;
+				
+			cj.lowAngularXLimit = new SoftJointLimit{limit = -45f};
+			cj.highAngularXLimit = new SoftJointLimit{limit = 45f};
+			cj.angularYLimit = new SoftJointLimit{limit = 10f};
+			cj.angularZLimit = new SoftJointLimit{limit = 45f};
 			
 		}
 		
-		
+		WS.JointRigidbodys = rbs.ToArray();
+		WS.RepetitionsOverRigidbodys = 3;
+		WS.WiggleMagnitudeZ = 15;
 	}
 }
 
