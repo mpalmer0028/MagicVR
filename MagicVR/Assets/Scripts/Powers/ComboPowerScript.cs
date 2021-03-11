@@ -21,6 +21,8 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 {
 	public GameObject PrimaryPower;
 	public GameObject OffPower;
+	public float TriggerAmountPrimary;
+	public float TriggerAmountOff;
 	
 	[SerializeField]
 	private GameObject _VisionTarget;
@@ -70,6 +72,11 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 	}
 	
 	public virtual void UpdatePowerTrigger(float triggerAmount, bool offHand){
-
+		if(!offHand){
+			TriggerAmountPrimary = triggerAmount;
+		}
+		else{
+			TriggerAmountOff = triggerAmount;
+		}
 	}
 }

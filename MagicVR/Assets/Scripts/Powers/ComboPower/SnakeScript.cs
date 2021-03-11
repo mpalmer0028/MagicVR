@@ -3,22 +3,77 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class SnakeScript : MonoBehaviour
+public class SnakeScript : ProjectileScript
 {
-	public Transform Target;
+	//public Animator SnakeAnimator;
 	public GameObject Head;
+	
 	public float CorrectionSpeed = 1000;
 	public float Push = 0.5f;
 	public Vector3 RotationCorrection = new Vector3(90,0,0);
 	public List<Transform> NeckTransforms;
 	
+	private Transform MeshRig;
+	private Transform AnimationRig;
+	private Transform[] AnimationOnlyBones;
+	private Transform[] AnimationOnlyReferenceBones;
+
+	public override bool Fired{
+		get{
+			return _Fired;
+		}
+		set{
+			_Fired = value;
+			
+			var headRB = Head.GetComponent<Rigidbody>();
+			headRB.constraints = !Fired ? RigidbodyConstraints.FreezePosition: RigidbodyConstraints.None;
+		}
+	}
+	
 	private WiggleScript WS;
 	private Quaternion HeadStartRotation;
+	private SkinnedMeshRenderer SnakeSkinnedMeshRenderer;
     // Start is called before the first frame update
     void Start()
-    {
-	    WS = gameObject.GetComponent<WiggleScript>();
+	{
+		SnakeSkinnedMeshRenderer = transform.Find("SnakeProjectile").Find("Snake").GetComponent<SkinnedMeshRenderer>();
+		foreach(var m in SnakeSkinnedMeshRenderer.materials){
+			var c = m.color;
+			c.a = 0;
+			m.color = c;
+		}
+		WS = GetComponent<WiggleScript>();
 	    HeadStartRotation = Head.transform.localRotation;
+	    var headRB = Head.GetComponent<Rigidbody>();
+		headRB.constraints = !Fired ? RigidbodyConstraints.FreezePosition: RigidbodyConstraints.None;
+		
+		AnimationRig = transform.Find("SnakeAnimator");
+		AnimationRig.parent = null;
+		AnimationRig.position = Vector3.zero;
+		
+		MeshRig = transform.Find("SnakeProjectile").Find("SnakeRig");
+		AnimationOnlyBones = new Transform[]{
+			MeshRig.Find("HeadTop.000").Find("HeadTop.001"),
+			MeshRig.Find("HeadTop.000").Find("HeadTop.001").Find("Fangs"),
+			MeshRig.Find("HeadTop.000").Find("HeadTop.001").Find("Jaw.000"),
+			MeshRig.Find("HeadTop.000").Find("HeadTop.001").Find("Jaw.000").Find("Jaw.001"),
+			MeshRig.Find("HeadTop.000").Find("Tongue.000"),
+			MeshRig.Find("HeadTop.000").Find("Tongue.000").Find("Tongue.001")
+		};
+		
+		AnimationOnlyReferenceBones = new Transform[]{
+			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("HeadTop.001"),
+			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("HeadTop.001").Find("Fangs"),
+			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("HeadTop.001").Find("Jaw.000"),
+			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("HeadTop.001").Find("Jaw.000").Find("Jaw.001"),
+			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("Tongue.000"),
+			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("Tongue.000").Find("Tongue.001")
+		};
+		
+		//foreach(var z in AnimationOnlyBones){
+		//	Debug.Log(z);
+		//}
+		
     }
 
     // Update is called once per frame
@@ -34,19 +89,63 @@ public class SnakeScript : MonoBehaviour
 		    qTo = Quaternion.Slerp(transform.rotation, qTo, CorrectionSpeed * Time.deltaTime)*Quaternion.Euler(RotationCorrection);
 	    	var rb = Head.GetComponent<Rigidbody>();
 	    	rb.MoveRotation(qTo);
-	    	//Head.transform.position += (Target.position - transform.position).normalized*.01f;
 		    rb.AddForce((Target.position - Head.transform.position).normalized*Push, ForceMode.Force);
+		    //SnakeAnimator.SetFloat("", Vector3.Distance(Target.position, Head.transform.position));
 	    }else{
 	    	//WS.Wiggling = false;
 	    }
 	    
+		//if(SnakeSkinnedMeshRenderer.materials[0].color.a <1){
+		//	Debug.Log(SnakeSkinnedMeshRenderer.materials[0].color);
+		//	foreach(var m in SnakeSkinnedMeshRenderer.materials){
+		//		var c = m.color;
+		//		c.a+= .01f;
+		//		m.color = c;				
+		//		//m.color.a+= new Color(m.color.r, m.color.b, m.color.g, SnakeSkinnedMeshRenderer.materials[0].color.a + .01f);
+		//	}
+		//}else if(SnakeSkinnedMeshRenderer.materials[0].GetFloat("_Surface") == 1){
+		//	foreach(var m in SnakeSkinnedMeshRenderer.materials){
+				
+		//		m.SetFloat("_Surface",0);				
+		//		//m.color.a+= new Color(m.color.r, m.color.b, m.color.g, SnakeSkinnedMeshRenderer.materials[0].color.a + .01f);
+		//	}
+		//}
+		
+		for(var i = 0; i<AnimationOnlyReferenceBones.Length; i++){
+			AnimationOnlyBones[i].localRotation = AnimationOnlyReferenceBones[i].localRotation;
+		}
+		// Fangs
+		AnimationOnlyBones[1].localScale = AnimationOnlyReferenceBones[1].localScale;
+		AnimationOnlyBones[4].localScale = AnimationOnlyReferenceBones[4].localScale;
+		AnimationOnlyBones[5].localScale = AnimationOnlyReferenceBones[5].localScale;
 	}
+	
     
 	public void BuildSnake()
 	{
-		var rig = transform.Find("SnakeRig");
-		Head = rig.Find("HeadTop.000").gameObject;
+		var meshSnake = transform.Find("SnakeProjectile");
+		MeshRig = meshSnake.Find("SnakeRig");
+		Head = MeshRig.Find("HeadTop.000").gameObject;
 		
+		// Build animation rig
+		AnimationRig = transform.Find("SnakeAnimator");
+		if(AnimationRig == null){
+			AnimationRig = Instantiate(meshSnake, transform);
+			AnimationRig.name = "SnakeAnimator";
+			
+		}
+		transform.Find("SnakeAnimator").Find("Snake").gameObject.active = false;
+		var animator = AnimationRig.GetComponent<Animator>();
+		if(animator == null){
+			animator = AnimationRig.gameObject.AddComponent(typeof(Animator)) as Animator;
+		}
+		animator.runtimeAnimatorController = (RuntimeAnimatorController)AssetDatabase.LoadAssetAtPath("Assets/Animation/SnakeAnimator.controller", typeof(RuntimeAnimatorController));
+		
+		//// Animator
+		//SnakeAnimator = GetComponent<Animator>();
+		//if(SnakeAnimator == null){
+		//	SnakeAnimator = gameObject.AddComponent(typeof(Animator)) as Animator;
+		//}
 		// Box Collider
 		BoxCollider bcHead = Head.gameObject.GetComponent<BoxCollider>();
 		if(bcHead == null){
@@ -65,14 +164,30 @@ public class SnakeScript : MonoBehaviour
 		rbHead.mass = 0.1f;
 		rbHead.useGravity = false;
 		
-		//WiggleScript
+		// WiggleScript
 		WS = GetComponent<WiggleScript>();
 		if(WS == null){
 			WS = gameObject.AddComponent(typeof(WiggleScript)) as WiggleScript;
 		}
-		Transform iNeckT = rig.Find("Neck.007");
+		
+		// Z - sideways motion
+		var curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(5, 1));
+		curve.preWrapMode = WrapMode.PingPong;
+		curve.postWrapMode = WrapMode.PingPong;		
+		WS.WiggleZ = curve;
+		
+		// other motion
+		curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(5, 0));
+		curve.preWrapMode = WrapMode.PingPong;
+		curve.postWrapMode = WrapMode.PingPong;
+		
+		WS.WiggleX = curve;
+		WS.WiggleY = curve;
+		
+		// Joints for neck
 		NeckTransforms = new List<Transform>{Head.transform};
 		var rbs = new List<Rigidbody>();
+		Transform iNeckT = MeshRig.Find("Neck.007");
 		while(((Transform)iNeckT).name != "Neck.000_end")
 		{
 			
@@ -131,9 +246,27 @@ public class SnakeScript : MonoBehaviour
 			
 		}
 		
+		
+		// wiggle settings
 		WS.JointRigidbodys = rbs.ToArray();
 		WS.RepetitionsOverRigidbodys = 3;
 		WS.WiggleMagnitudeZ = 15;
+		
+		// Set materials 		
+		SnakeSkinnedMeshRenderer = meshSnake.Find("Snake").GetComponent<SkinnedMeshRenderer>();
+		Debug.Assert(SnakeSkinnedMeshRenderer != null);
+		var mats = SnakeSkinnedMeshRenderer.sharedMaterials;
+		mats[0] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeSkin.mat", typeof(Material));
+		mats[1] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeMouth.mat", typeof(Material));
+		mats[2] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/Tongue.mat", typeof(Material));
+		mats[3] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeEye.mat", typeof(Material));
+		mats[4] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/Teeth.mat", typeof(Material));
+		SnakeSkinnedMeshRenderer.sharedMaterials = mats;
+		for(var i = 0; i<SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyCount();i++){
+			Debug.Log(SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyName(i)+" "+ SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyType(i).ToString());
+			//Debug.Log();
+		}
+		
 	}
 }
 
