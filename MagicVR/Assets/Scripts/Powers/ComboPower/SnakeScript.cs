@@ -15,6 +15,7 @@ public class SnakeScript : ProjectileScript
 	
 	private Transform MeshRig;
 	private Transform AnimationRig;
+	private Transform NeckStart;
 	private Transform[] AnimationOnlyBones;
 	private Transform[] AnimationOnlyReferenceBones;
 
@@ -69,7 +70,7 @@ public class SnakeScript : ProjectileScript
 			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("Tongue.000"),
 			AnimationRig.Find("SnakeRig").Find("HeadTop.000").Find("Tongue.000").Find("Tongue.001")
 		};
-		
+		NeckStart = AnimationRig.Find("SnakeRig").Find("HeadTop.000");
 		//foreach(var z in AnimationOnlyBones){
 		//	Debug.Log(z);
 		//}
@@ -85,8 +86,8 @@ public class SnakeScript : ProjectileScript
 	    	
 	    	//Head.transform.LookAt(Target.transform);
 	    	//Head.transform.rotation *= Quaternion.LookRotation(target.position - transform.position);
-	    	var qTo = Quaternion.LookRotation(Target.position - Head.transform.position);
-		    qTo = Quaternion.Slerp(transform.rotation, qTo, CorrectionSpeed * Time.deltaTime)*Quaternion.Euler(RotationCorrection);
+	    	var qTo = Quaternion.LookRotation(Target.position - Head.transform.position)*NeckStart.localRotation;
+		    qTo = Quaternion.Slerp(transform.rotation, qTo, CorrectionSpeed * Time.deltaTime)*Quaternion.Euler(RotationCorrection)*AnimationRig.Find("SnakeRig").Find("HeadTop.000").localRotation;
 	    	var rb = Head.GetComponent<Rigidbody>();
 	    	rb.MoveRotation(qTo);
 		    rb.AddForce((Target.position - Head.transform.position).normalized*Push, ForceMode.Force);
