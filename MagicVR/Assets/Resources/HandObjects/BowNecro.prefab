@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 6007546031344224483}
   - component: {fileID: 272096860087402074}
   m_Layer: 11
-  m_Name: Cube
+  m_Name: Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 4928721523495659816}
   - component: {fileID: 6708374814250279237}
   m_Layer: 11
-  m_Name: Cube
+  m_Name: Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

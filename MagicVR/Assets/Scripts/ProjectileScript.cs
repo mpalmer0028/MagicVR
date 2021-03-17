@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ProjectileScript : MonoBehaviour
 {
+	public float Life = 10;
 	public Transform Target;
+	public ShootingPowerScript ShootingPowerScript;
 	
 	[SerializeField]
 	protected bool _Fired;
@@ -14,8 +16,12 @@ public class ProjectileScript : MonoBehaviour
 		}
 		set{
 			_Fired = value;
+			Destroy(gameObject, Life);
 		}
 	}
 	public bool Homing;
     
+	public virtual void OnDestroy(){
+		ShootingPowerScript.Projectiles.Remove(gameObject);
+	}
 }

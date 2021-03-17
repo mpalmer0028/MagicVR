@@ -31,8 +31,8 @@ public class WiggleScript : MonoBehaviour
     {
 	    StartTime = Time.time;
 	    WiggleOffset = WiggleX.length/JointRigidbodys.Count();
-	    Debug.Assert(WiggleX.length == WiggleY.length);
-	    Debug.Assert(WiggleX.length == WiggleZ.length);
+	    //Debug.Assert(WiggleX.length == WiggleY.length);
+	    //Debug.Assert(WiggleX.length == WiggleZ.length);
     }
 
     // Update is called once per frame

@@ -19,20 +19,31 @@ interface IComboPower
 
 public class ComboPowerScript : MonoBehaviour, IComboPower
 {
+	/// <summary>
+	/// Power object copied from prefab to hand spawns
+	/// </summary>
 	public GameObject PrimaryPower;
+	
+	/// <summary>
+	/// Power object copied from prefab to hand spawns
+	/// </summary>
 	public GameObject OffPower;
+	
+	
+	
 	public float TriggerAmountPrimary;
 	public float TriggerAmountOff;
 	
 	[SerializeField]
 	private GameObject _VisionTarget;
-	public GameObject VisionTarget{get{return _VisionTarget;}set{_VisionTarget=value;}}
+	public GameObject VisionTarget{get{return _VisionTarget;}set{_VisionTarget=value;}}	
 	
     // Start is called before the first frame update
 	public virtual void Start()
     {
 	    transform.Find("PrimaryHand").gameObject.active = false;
 	    transform.Find("OffHand").gameObject.active = false;
+	    
     }    	
     
 	public void ActivatePower(PowerSystemScript powerSystemScript)

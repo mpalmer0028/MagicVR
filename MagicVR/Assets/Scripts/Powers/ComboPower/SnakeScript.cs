@@ -10,15 +10,26 @@ public class SnakeScript : ProjectileScript
 	
 	public float CorrectionSpeed = 1000;
 	public float Push = 0.5f;
+	public float FadeAmount = 0.05f;
 	public Vector3 RotationCorrection = new Vector3(90,0,0);
 	public List<Transform> NeckTransforms;
 	
+	private AudioSource AudioSource;
+	private Animator Animator;
+	
+	private Transform FadeInSnake;
+	private Transform MeshSnake;
 	private Transform MeshRig;
 	private Transform AnimationRig;
 	private Transform NeckStart;
 	private Transform[] AnimationOnlyBones;
 	private Transform[] AnimationOnlyReferenceBones;
-
+	
+	private WiggleScript WS;
+	private Quaternion HeadStartRotation;
+	private SkinnedMeshRenderer SnakeSkinnedMeshRenderer;
+	private SkinnedMeshRenderer FadeInSnakeSkinnedMeshRenderer;
+	
 	public override bool Fired{
 		get{
 			return _Fired;
@@ -27,28 +38,31 @@ public class SnakeScript : ProjectileScript
 			_Fired = value;
 			
 			var headRB = Head.GetComponent<Rigidbody>();
+			if(value && AnimationRig != null){
+				Destroy(gameObject, 10);
+				Destroy(AnimationRig.gameObject, 10);
+			}
+		
+			
 			headRB.constraints = !Fired ? RigidbodyConstraints.FreezePosition: RigidbodyConstraints.None;
 		}
 	}
 	
-	private WiggleScript WS;
-	private Quaternion HeadStartRotation;
-	private SkinnedMeshRenderer SnakeSkinnedMeshRenderer;
     // Start is called before the first frame update
     void Start()
 	{
+		AudioSource = GetComponent<AudioSource>();
 		SnakeSkinnedMeshRenderer = transform.Find("SnakeProjectile").Find("Snake").GetComponent<SkinnedMeshRenderer>();
-		foreach(var m in SnakeSkinnedMeshRenderer.materials){
-			var c = m.color;
-			c.a = 0;
-			m.color = c;
-		}
+		
 		WS = GetComponent<WiggleScript>();
+		
 	    HeadStartRotation = Head.transform.localRotation;
 	    var headRB = Head.GetComponent<Rigidbody>();
 		headRB.constraints = !Fired ? RigidbodyConstraints.FreezePosition: RigidbodyConstraints.None;
 		
 		AnimationRig = transform.Find("SnakeAnimator");
+		Animator = AnimationRig.GetComponent<Animator>();
+		
 		AnimationRig.parent = null;
 		AnimationRig.position = Vector3.zero;
 		
@@ -75,13 +89,30 @@ public class SnakeScript : ProjectileScript
 		//	Debug.Log(z);
 		//}
 		
+		// Disable visible snake
+		WS.enabled = false;
+		MeshSnake = transform.Find("SnakeProjectile");
+		FadeInSnake = transform.Find("FadeInSnake");
+		
+		FadeInSnake.gameObject.active = true;
+		MeshSnake.gameObject.active = false;
+		
+		FadeInSnakeSkinnedMeshRenderer = FadeInSnake.Find("Snake").GetComponent<SkinnedMeshRenderer>();
+		foreach(var m in FadeInSnakeSkinnedMeshRenderer.materials){
+			if(m != null){
+				var c = m.color;
+				c.a = 0;
+				m.color = c;
+			}
+			
+		}
     }
 
     // Update is called once per frame
 	void FixedUpdate()
 	{
 		
-	    if(Target != null){
+		if(Target != null && MeshSnake.gameObject.active){
 	    	//WS.Wiggling = true;
 	    	
 	    	//Head.transform.LookAt(Target.transform);
@@ -92,7 +123,27 @@ public class SnakeScript : ProjectileScript
 	    	rb.MoveRotation(qTo);
 		    rb.AddForce((Target.position - Head.transform.position).normalized*Push, ForceMode.Force);
 		    //SnakeAnimator.SetFloat("", Vector3.Distance(Target.position, Head.transform.position));
-	    }else{
+		    var distance = Vector3.Distance(Head.transform.position, Target.position);
+		    Animator.SetFloat("Distance", distance);
+		    //Debug.Log(distance);
+		    if(distance < 5 && !AudioSource.isPlaying){
+		    	AudioSource.Play();
+		    }
+		
+		}else if(Target != null && !MeshSnake.gameObject.active){
+			if(FadeInSnakeSkinnedMeshRenderer.sharedMaterials[0].color.a < 1){
+				var sm = FadeInSnakeSkinnedMeshRenderer.sharedMaterials;
+				sm[0].color += new Color(0,0,0,FadeAmount);
+				sm[3].color += new Color(0,0,0,FadeAmount);
+				FadeInSnakeSkinnedMeshRenderer.sharedMaterials = sm;
+				var qTo = Quaternion.LookRotation(Target.position - FadeInSnake.position);
+				qTo = Quaternion.Slerp(transform.rotation, qTo, CorrectionSpeed * Time.deltaTime);
+				
+				FadeInSnake.rotation = qTo;
+			}else{
+				MeshSnake.gameObject.active = true;
+				FadeInSnake.gameObject.active = false;
+			}
 	    	//WS.Wiggling = false;
 	    }
 	    
@@ -112,6 +163,7 @@ public class SnakeScript : ProjectileScript
 		//	}
 		//}
 		
+		
 		for(var i = 0; i<AnimationOnlyReferenceBones.Length; i++){
 			AnimationOnlyBones[i].localRotation = AnimationOnlyReferenceBones[i].localRotation;
 		}
@@ -121,32 +173,56 @@ public class SnakeScript : ProjectileScript
 		AnimationOnlyBones[5].localScale = AnimationOnlyReferenceBones[5].localScale;
 	}
 	
-    
 	public void BuildSnake()
 	{
-		var meshSnake = transform.Find("SnakeProjectile");
-		MeshRig = meshSnake.Find("SnakeRig");
+		
+		MeshSnake = transform.Find("SnakeProjectile");
+		MeshRig = MeshSnake.Find("SnakeRig");
 		Head = MeshRig.Find("HeadTop.000").gameObject;
+		
+		// WiggleScript
+		WS = GetComponent<WiggleScript>();
+		if(WS == null){
+			WS = gameObject.AddComponent(typeof(WiggleScript)) as WiggleScript;
+		}
+		
+		// Audio
+		AudioSource = GetComponent<AudioSource>();
+		if(AudioSource == null){
+			AudioSource = gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
+		}
+		AudioSource.clip = (AudioClip)AssetDatabase.LoadAssetAtPath("Assets/Audio/hiss.001.mp3", typeof(AudioClip));
 		
 		// Build animation rig
 		AnimationRig = transform.Find("SnakeAnimator");
 		if(AnimationRig == null){
-			AnimationRig = Instantiate(meshSnake, transform);
+			AnimationRig = Instantiate(MeshSnake, transform);
 			AnimationRig.name = "SnakeAnimator";
 			
 		}
 		transform.Find("SnakeAnimator").Find("Snake").gameObject.active = false;
-		var animator = AnimationRig.GetComponent<Animator>();
-		if(animator == null){
-			animator = AnimationRig.gameObject.AddComponent(typeof(Animator)) as Animator;
+		Animator = AnimationRig.GetComponent<Animator>();
+		if(Animator == null){
+			Animator = AnimationRig.gameObject.AddComponent(typeof(Animator)) as Animator;
 		}
-		animator.runtimeAnimatorController = (RuntimeAnimatorController)AssetDatabase.LoadAssetAtPath("Assets/Animation/SnakeAnimator.controller", typeof(RuntimeAnimatorController));
+		Animator.runtimeAnimatorController = (RuntimeAnimatorController)AssetDatabase.LoadAssetAtPath("Assets/Animation/SnakeAnimator.controller", typeof(RuntimeAnimatorController));
 		
-		//// Animator
-		//SnakeAnimator = GetComponent<Animator>();
-		//if(SnakeAnimator == null){
-		//	SnakeAnimator = gameObject.AddComponent(typeof(Animator)) as Animator;
-		//}
+		// Build fade in snake
+		FadeInSnake = transform.Find("FadeInSnake");
+		if(FadeInSnake == null){
+			FadeInSnake = Instantiate(MeshSnake, transform);
+			FadeInSnake.name = "FadeInSnake";
+		}
+		// Set FadeInSnake materials 		
+		FadeInSnakeSkinnedMeshRenderer = FadeInSnake.Find("Snake").GetComponent<SkinnedMeshRenderer>();
+		var fadeMats = FadeInSnakeSkinnedMeshRenderer.sharedMaterials;
+		fadeMats[0] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeSkinFade.mat", typeof(Material));
+		fadeMats[1] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/Clear.mat", typeof(Material));
+		fadeMats[2] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/Clear.mat", typeof(Material));
+		fadeMats[3] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeEyeFade.mat", typeof(Material));
+		fadeMats[4] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/Clear.mat", typeof(Material));
+		FadeInSnakeSkinnedMeshRenderer.sharedMaterials = fadeMats;
+
 		// Box Collider
 		BoxCollider bcHead = Head.gameObject.GetComponent<BoxCollider>();
 		if(bcHead == null){
@@ -165,11 +241,6 @@ public class SnakeScript : ProjectileScript
 		rbHead.mass = 0.1f;
 		rbHead.useGravity = false;
 		
-		// WiggleScript
-		WS = GetComponent<WiggleScript>();
-		if(WS == null){
-			WS = gameObject.AddComponent(typeof(WiggleScript)) as WiggleScript;
-		}
 		
 		// Z - sideways motion
 		var curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(5, 1));
@@ -224,11 +295,9 @@ public class SnakeScript : ProjectileScript
 			cj.connectedBody = NeckTransforms[NeckTransforms.Count-2].GetComponent<Rigidbody>();
 				
 								
-			if(iNeckT.name != "Neck.007"){
-				
-				
-			}else{
+			if(iNeckT.name == "Neck.007"){
 				cj.connectedBody = Head.GetComponent<Rigidbody>();
+				
 			}
 
 			
@@ -253,9 +322,9 @@ public class SnakeScript : ProjectileScript
 		WS.RepetitionsOverRigidbodys = 3;
 		WS.WiggleMagnitudeZ = 15;
 		
-		// Set materials 		
-		SnakeSkinnedMeshRenderer = meshSnake.Find("Snake").GetComponent<SkinnedMeshRenderer>();
-		Debug.Assert(SnakeSkinnedMeshRenderer != null);
+		// Set main materials 		
+		SnakeSkinnedMeshRenderer = MeshSnake.Find("Snake").GetComponent<SkinnedMeshRenderer>();
+		//Debug.Assert(SnakeSkinnedMeshRenderer != null);
 		var mats = SnakeSkinnedMeshRenderer.sharedMaterials;
 		mats[0] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeSkin.mat", typeof(Material));
 		mats[1] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeMouth.mat", typeof(Material));
@@ -263,12 +332,14 @@ public class SnakeScript : ProjectileScript
 		mats[3] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/SnakeEye.mat", typeof(Material));
 		mats[4] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Materials/Powers/Snake/Teeth.mat", typeof(Material));
 		SnakeSkinnedMeshRenderer.sharedMaterials = mats;
-		for(var i = 0; i<SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyCount();i++){
-			Debug.Log(SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyName(i)+" "+ SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyType(i).ToString());
-			//Debug.Log();
-		}
+		//for(var i = 0; i<SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyCount();i++){
+		//	Debug.Log(SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyName(i)+" "+ SnakeSkinnedMeshRenderer.sharedMaterials[0].shader.GetPropertyType(i).ToString());
+		//	//Debug.Log();
+		//}
 		
 	}
+	
+	
 }
 
 

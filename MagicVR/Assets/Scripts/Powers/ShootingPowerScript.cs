@@ -11,6 +11,7 @@ public class ShootingPowerScript : ComboPowerScript
 	public GameObject ProjectilePrefab;
 	public GameObject ProjectilePrimary;
 	public GameObject ProjectileOffHand;
+
 	
 	public List<GameObject> Projectiles;
 	
@@ -21,10 +22,31 @@ public class ShootingPowerScript : ComboPowerScript
 	
 	public float WaitTill;
 	
+	private Transform SpawnPrimary;
+	private Transform SpawnOffHand;
+	
 	public override void Start()
 	{
 		base.Start();
+		Projectiles = new List<GameObject>();
 		WaitTill = Time.time;
+		SpawnPrimary = transform.Find("PrimaryHand").GetChild(0);
+		SpawnOffHand = transform.Find("OffHand").GetChild(0);
+		if(SpawnPrimary != null){
+			var pp =  SpawnPrimary.localPosition;
+			var pr =  SpawnPrimary.localRotation;
+			SpawnPrimary.parent = PrimaryPower.transform;
+			SpawnPrimary.localPosition = pp;
+			SpawnPrimary.localRotation = pr;
+		}
+		if(SpawnOffHand != null){
+			var op =  SpawnOffHand.localPosition;
+			var or =  SpawnOffHand.localRotation;
+			SpawnOffHand.parent = OffPower.transform;
+			SpawnOffHand.localPosition = op;
+			SpawnOffHand.localRotation = or;
+			
+		}
 	}
     
 	public virtual void Update()
@@ -40,27 +62,33 @@ public class ShootingPowerScript : ComboPowerScript
 		
 	}
     
-	public GameObject Shoot(){
+	public GameObject LoadShot(){
 		WaitTill = Time.time + ProjectileInterval;
-		ProjectilePrimary = Instantiate(ProjectilePrefab, PrimaryPower.transform.position, PrimaryPower.transform.rotation);
+		var spawnT = SpawnPrimary == null ? PrimaryPower.transform : SpawnPrimary;
+		
+		ProjectilePrimary = Instantiate(ProjectilePrefab, spawnT.position, spawnT.rotation);
 		Projectiles.Add(ProjectilePrimary);
 		
 		var shotScript = ProjectilePrimary.GetComponent<ProjectileScript>();
 		shotScript.Fired = !ChargeShots;
+		shotScript.ShootingPowerScript = this;
 		return ProjectilePrimary;
 	}
 	
-	public GameObject ShootOffHand(){
+	public GameObject LoadShotOffHand(){
 		WaitTill = Time.time + ProjectileInterval;
-		ProjectileOffHand = Instantiate(ProjectilePrefab, OffPower.transform.position, PrimaryPower.transform.rotation);
+		var spawnT = SpawnOffHand == null ? OffPower.transform : SpawnOffHand;
+		
+		ProjectileOffHand = Instantiate(ProjectilePrefab, spawnT.position, spawnT.rotation);
 		Projectiles.Add(ProjectileOffHand);
 		
 		var shotScript = ProjectileOffHand.GetComponent<ProjectileScript>();
 		shotScript.Fired = !ChargeShots;
+		shotScript.ShootingPowerScript = this;
 		return ProjectileOffHand;
 	}
 	
-	public GameObject ReleasePrimary(){
+	public virtual GameObject ReleasePrimary(){
 		var shotScript = ProjectilePrimary.GetComponent<ProjectileScript>();
 		var pp = ProjectilePrimary;
 		
@@ -70,7 +98,7 @@ public class ShootingPowerScript : ComboPowerScript
 	}
 	
 	
-	public GameObject ReleaseOffHand(){
+	public virtual GameObject ReleaseOffHand(){
 		var shotScript = ProjectileOffHand.GetComponent<ProjectileScript>();
 		var po = ProjectileOffHand;
 		

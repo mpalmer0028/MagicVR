@@ -370,7 +370,7 @@ PrefabInstance:
     - target: {fileID: 3179189967573681796, guid: dc06161b6d97feb419f45f03b62e14b9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.64
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
@@ -512,7 +512,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 1, z: 1, w: 1}
+  m_BoundingSphereOverride: {x: 0, y: 5.3333e-41, z: 0, w: -0.0000000029540388}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -632,7 +632,7 @@ PrefabInstance:
     - target: {fileID: 3218325813983488918, guid: 2d514966a493aba4099bb2569f830912,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d514966a493aba4099bb2569f830912, type: 3}
@@ -643,21 +643,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6143750334137833471, guid: 2dda9b0707e3b874facf51a19557882b,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.x
-      value: -3.1991976e-13
-      objectReference: {fileID: 0}
-    - target: {fileID: 6143750334137833471, guid: 2dda9b0707e3b874facf51a19557882b,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.y
-      value: 0.0022834796
-      objectReference: {fileID: 0}
-    - target: {fileID: 6143750334137833471, guid: 2dda9b0707e3b874facf51a19557882b,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.z
-      value: 4.1277526e-10
-      objectReference: {fileID: 0}
     - target: {fileID: 6143750335004774088, guid: 2dda9b0707e3b874facf51a19557882b,
         type: 3}
       propertyPath: m_RootOrder
@@ -666,17 +651,17 @@ PrefabInstance:
     - target: {fileID: 6143750335004774088, guid: 2dda9b0707e3b874facf51a19557882b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.26166666
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6143750335004774088, guid: 2dda9b0707e3b874facf51a19557882b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6143750335004774088, guid: 2dda9b0707e3b874facf51a19557882b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.006321
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6143750335004774088, guid: 2dda9b0707e3b874facf51a19557882b,
         type: 3}
@@ -718,20 +703,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Snake (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 6143750335165189423, guid: 2dda9b0707e3b874facf51a19557882b,
+    - target: {fileID: 6143750335004774095, guid: 2dda9b0707e3b874facf51a19557882b,
         type: 3}
-      propertyPath: m_ConnectedAnchor.x
-      value: 1.3462678e-13
-      objectReference: {fileID: 0}
-    - target: {fileID: 6143750335165189423, guid: 2dda9b0707e3b874facf51a19557882b,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.y
-      value: 0.002283482
-      objectReference: {fileID: 0}
-    - target: {fileID: 6143750335165189423, guid: 2dda9b0707e3b874facf51a19557882b,
-        type: 3}
-      propertyPath: m_ConnectedAnchor.z
-      value: -2.469837e-10
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2dda9b0707e3b874facf51a19557882b, type: 3}
@@ -809,7 +784,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 5.33e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 5.3933e-41, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
