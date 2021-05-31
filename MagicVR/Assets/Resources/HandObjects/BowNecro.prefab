@@ -194,7 +194,7 @@ MonoBehaviour:
   ChargeShots: 1
   MaxProjectiles: 10
   ProjectileInterval: 0.5
-  ProjectilePrefab: {fileID: 6143750335004774095, guid: 2dda9b0707e3b874facf51a19557882b,
+  ProjectilePrefab: {fileID: 5306634161003211078, guid: 2dda9b0707e3b874facf51a19557882b,
     type: 3}
   ProjectilePrimary: {fileID: 0}
   ProjectileOffHand: {fileID: 0}
