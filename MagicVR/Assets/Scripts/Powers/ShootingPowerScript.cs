@@ -6,6 +6,7 @@ public class ShootingPowerScript : ComboPowerScript
 {
 	public bool ChargeShots;
 	public int MaxProjectiles = 10;
+	public float MinimumTrigger = .25f;
 	public float ProjectileInterval = 1f;
 	
 	public GameObject ProjectilePrefab;
@@ -60,6 +61,12 @@ public class ShootingPowerScript : ComboPowerScript
 			ProjectileOffHand.transform.localScale += Growth;
 		}
 		
+		if(TriggerAmountPrimary <= MinimumTrigger && ProjectilePrimary != null){			
+			ReleasePrimary();
+		}
+		if(TriggerAmountOff <= MinimumTrigger && ProjectileOffHand != null){
+			ReleaseOffHand();
+		}
 	}
     
 	public GameObject LoadShot(){

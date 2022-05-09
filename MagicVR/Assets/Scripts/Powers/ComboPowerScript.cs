@@ -62,8 +62,9 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 		//var localRotation = primaryPowerTransform.localRotation;		
 		PrimaryPower = Instantiate(primaryPowerTransform.gameObject,primaryHandSpawn.transform);
 		OffPower = Instantiate(offPowerTransform.gameObject,offHandSpawn.transform);
-		
-		if(powerSystemScript.LeftHanded){
+
+		GetPropertiesFromInstantiateHandObjects(PrimaryPower, OffPower);
+		if (powerSystemScript.LeftHanded){
 			var pt = PrimaryPower.transform;
 			var pp = pt.localPosition;
 			pt.localPosition = new Vector3(pp.x*-1,pp.y,pp.z);
@@ -76,7 +77,18 @@ public class ComboPowerScript : MonoBehaviour, IComboPower
 		
 	}
 
-	public void RemovePower(PowerSystemScript powerSystemScript)
+	/// <summary>
+	/// ComboPowerScript subclasses will need to get new references from the instantiated 
+	/// copies of the hand objects.
+	/// </summary>
+	/// <param name="primaryPower"></param>
+	/// <param name="offPower"></param>
+	public virtual void GetPropertiesFromInstantiateHandObjects(GameObject primaryPower, GameObject offPower)
+    {
+        
+    }
+
+    public void RemovePower(PowerSystemScript powerSystemScript)
 	{
 		Destroy(PrimaryPower);
 		Destroy(OffPower);

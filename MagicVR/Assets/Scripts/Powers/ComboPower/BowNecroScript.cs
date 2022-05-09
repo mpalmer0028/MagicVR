@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BowNecroScript : ShootingPowerScript
 {
-	public float MinimumTrigger = .25f;
+	
 	
 	public SnakeScript SnakeScriptPrimary;
 	public SnakeScript SnakeScriptOff;
@@ -40,12 +40,7 @@ public class BowNecroScript : ShootingPowerScript
 		    offHeadRB.constraints = ChargeShots? RigidbodyConstraints.FreezePosition: RigidbodyConstraints.None;
 		}
 		
-		if(TriggerAmountPrimary <= MinimumTrigger && ProjectilePrimary != null){			
-			ReleasePrimary();
-		}
-		if(TriggerAmountOff <= MinimumTrigger && ProjectileOffHand != null){
-			ReleaseOffHand();
-		}
+		
 	}
     
 }
