@@ -18,17 +18,22 @@ public class SwordWaterScript : ComboPowerScript
 	// Amount of wiggling
 	public AnimationCurve Wiggle;
 	public float WiggleMagnitude = 1;
+	public float WiggleShootingMagnitude = 2;
 	
 	// How strong the tip is pulled toward where the player is looking
 	public float PointForce = 10;
 
 	// SwordFishScript props
 	// Water particles
-	public ParticleSystem WaterPS;
+	public ParticleSystem GushPS;
+	public ParticleSystem CorePS;
+	public ParticleSystem TrailsPS;
 	public AudioSource WaterAudioSource;
 
 	//public Rigidbody[] JointRigidbodys;
 	public Rigidbody TipRigidbody;
+
+	public Transform GunModeTarget;
 
 	private bool BodyLocked = false;
 	private ConfigurableJoint[] ConfigurableJoints;
@@ -36,66 +41,22 @@ public class SwordWaterScript : ComboPowerScript
 	private Vector2[] StartDamping;
 	private float StartTime;
 	private float WiggleOffset;
-    protected ParticleSystem.EmissionModule Emission;
     private Rigidbody[] FreezableRigidbodys;
 	
 	public override void Start(){
 		base.Start();
 		//StartTime = Time.time;
 		//var rig = transform.Find("PrimaryHand").Find("SwordfishSimple8");
-		//ConfigurableJoints = new ConfigurableJoint[] { 
-		//	rig.Find("Spine.000").GetComponent<ConfigurableJoint>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").GetComponent<ConfigurableJoint>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").GetComponent<ConfigurableJoint>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004").GetComponent<ConfigurableJoint>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").GetComponent<ConfigurableJoint>(), 
-		//	 rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").Find("Spine.005").GetComponent<ConfigurableJoint>(), 
-		//	 rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").Find("Spine.005").Find("Spine.007").GetComponent<ConfigurableJoint>(), 
-		//};
-		//FreezableRigidbodys = new Rigidbody[] { 
-		//	rig.Find("Spine.000").GetComponent<Rigidbody>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").GetComponent<Rigidbody>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").GetComponent<Rigidbody>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004").GetComponent<Rigidbody>(), 
-		//	rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").GetComponent<Rigidbody>(), 
-		//	 rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").Find("Spine.005").GetComponent<Rigidbody>(), 
-		//	 rig.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").Find("Spine.005").Find("Spine.007").GetComponent<Rigidbody>(), 
-		//};
 
-		
-		//Debug.Log(rig
-		//	.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").Find("Spine.005").Find("Spine.007")
-		//	.Find("SpitSpawn")
-		//	);
-		//WaterAudioSource = rig
-		//	.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawn").GetComponent<AudioSource>();
-		//WaterPS = rig
-		//	.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-		//	.Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawn")
-		//	.Find("WaterParticle").Find("Gush").GetComponent<ParticleSystem>();
-		//StartRigidness = ConfigurableJoints.AsQueryable().Select(x=> new Vector2(x.angularXLimitSpring.spring,x.angularYZLimitSpring.spring)).ToArray();
-		//StartDamping = ConfigurableJoints.AsQueryable().Select(x=> new Vector2(x.angularXLimitSpring.damper,x.angularYZLimitSpring.damper)).ToArray();
-		
-		//WiggleOffset = Wiggle.length/FreezableRigidbodys.Count();
-
-		
 		
 	}
 	
 	void Update(){
-		Emission = WaterPS.emission;
+		
 		if (!WaterAudioSource.isPlaying){
 			BodyLocked = false;
 			//Emission.enabled = false;
-			//WaterPS.enableEmission = false;
+			//GushPS.enableEmission = false;
 		}
 		if(BodyLocked){
 			// Grow/shrink
@@ -106,16 +67,10 @@ public class SwordWaterScript : ComboPowerScript
 
 			}
 			// Point
-			TipRigidbody.AddForce((VisionTarget.transform.position-PrimaryPower.transform.position)*PointForce);
+			//TipRigidbody.AddForce((VisionTarget.transform.position-PrimaryPower.transform.position)*PointForce);
+			TipRigidbody.AddForce(PrimaryPower.transform.rotation * (GunModeTarget.transform.localPosition*PointForce));
 		}else{
-			// Wiggle
-			for(var i = 0; i < FreezableRigidbodys.Count();i++){
-				var t =  (Time.time-StartTime)*2;
-				
-				var wiggle = (Wiggle.Evaluate(t+(WiggleOffset*i))-.5f)*WiggleMagnitude;
-				var torque = new Vector3(0,0,wiggle);
-				FreezableRigidbodys[i].AddRelativeTorque(torque);
-			}
+			
 			
 			// Correct scale
 			var amountOff = FreezableRigidbodys[0].transform.localScale.x-1;
@@ -128,6 +83,16 @@ public class SwordWaterScript : ComboPowerScript
 					FreezableRigidbodys[i].transform.localScale += new Vector3(step, step, step);
 				}
 			}
+		}
+
+		// Wiggle
+		for (var i = 0; i < FreezableRigidbodys.Count(); i++)
+		{
+			var t = (Time.time - StartTime) * 2;
+
+			var wiggle = (Wiggle.Evaluate(t + (WiggleOffset * i)) - .5f) * (BodyLocked ? WiggleMagnitude * WiggleShootingMagnitude : WiggleMagnitude) ;
+			var torque = new Vector3(0, 0, wiggle);
+			FreezableRigidbodys[i].AddRelativeTorque(torque);
 		}
 	}
 	
@@ -143,8 +108,11 @@ public class SwordWaterScript : ComboPowerScript
 				StartTime = Time.time;
 
 				// Start spray
-				Emission.enabled = false;
-				//WaterPS.enableEmission = true;
+				GushPS.Play();
+				CorePS.Play();
+				//TrailsPS.Play();
+				//Emission.enabled = true;
+				//GushPS.enableEmission = true;
 				WaterAudioSource.Play();
 				
 				//for(var i = 0; i < FreezableRigidbodys.Count();i++){
@@ -155,8 +123,11 @@ public class SwordWaterScript : ComboPowerScript
 				BodyLocked = false;
 
 				// Start spray
-				Emission.enabled = false;
-				//WaterPS.enableEmission = false;
+				//Emission.enabled = false;
+				//GushPS.enableEmission = false;
+				GushPS.Stop();
+				CorePS.Stop();
+				TrailsPS.Stop();
 				WaterAudioSource.Stop();
 				
 				//for(var i = 0; i < FreezableRigidbodys.Count();i++){
@@ -195,19 +166,30 @@ public class SwordWaterScript : ComboPowerScript
 			.Find("Spine.006").Find("Spine.005").Find("Spine.007").GetComponent<Rigidbody>(),
 		};
 
+		// Mount spit spawn
+		var spitSpawn = transform.Find("SpitSpawn");
 
-		Debug.Log(rig
-			.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-			.Find("Spine.006").Find("Spine.005").Find("Spine.007")
-			.Find("SpitSpawn")
-			);
-		WaterAudioSource = rig
-			.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-			.Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawn").GetComponent<AudioSource>();
-		WaterPS = rig
-			.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
-			.Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawn")
+        //spitSpawn = Instantiate(spitSpawn, rig
+        //	.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
+        //	.Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawnBone"));
+
+
+        spitSpawn.parent = rig
+            .Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
+            .Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawnBone");
+        spitSpawn.localPosition = Vector3.zero;
+		spitSpawn.localScale = Vector3.one;
+		spitSpawn.localRotation = Quaternion.identity;
+		WaterAudioSource = spitSpawn.GetComponent<AudioSource>();
+		GushPS = spitSpawn
 			.Find("WaterParticle").Find("Gush").GetComponent<ParticleSystem>();
+		CorePS = spitSpawn
+			.Find("WaterParticle").Find("Core").GetComponent<ParticleSystem>();
+		TrailsPS = spitSpawn
+			.Find("WaterParticle").Find("Trails").GetComponent<ParticleSystem>();
+		GushPS.Stop();
+		CorePS.Stop();
+		TrailsPS.Stop();
 		StartRigidness = ConfigurableJoints.AsQueryable().Select(x => new Vector2(x.angularXLimitSpring.spring, x.angularYZLimitSpring.spring)).ToArray();
 		StartDamping = ConfigurableJoints.AsQueryable().Select(x => new Vector2(x.angularXLimitSpring.damper, x.angularYZLimitSpring.damper)).ToArray();
 
@@ -239,6 +221,8 @@ public class SwordWaterScript : ComboPowerScript
 		spines.Add(spines[4].Find("Spine.006"));
 		spines.Add(spines[5].Find("Spine.005"));
 		spines.Add(spines[6].Find("Spine.007"));
+
+		ChangeLayersRecursively(swordWaterPrefab.transform.Find("PrimaryHand").Find("SwordfishSimple8"), "Weapon");
 
 		// Configurable joint data
 		var connectedBodiesIndexes = new List<int?>() { 1, null, 1, 2, 3, 4, 5, 6 };
@@ -367,12 +351,12 @@ public class SwordWaterScript : ComboPowerScript
 			new Vector3(0,.5f,0)
 		};
 		var colliderSizes = new List<Vector3> { new Vector3(.1f, .1f, .71f),
-			new Vector3(.2f,.2f,.2f),
-			new Vector3(.2f,.2f,.25f),
-			new Vector3(.2f,.2f,.3f),
-			new Vector3(.2f,.2f,.35f),
-			new Vector3(.2f,.2f,.4f),
-			new Vector3(.2f,.2f,.35f),
+			new Vector3(.2f,.15f,.2f),
+			new Vector3(.2f,.15f,.25f),
+			new Vector3(.2f,.15f,.3f),
+			new Vector3(.2f,.15f,.35f),
+			new Vector3(.2f,.15f,.4f),
+			new Vector3(.2f,.15f,.35f),
 			new Vector3(.1f,1.25f,.1f)
 		};
 
@@ -502,7 +486,7 @@ public class SwordWaterScript : ComboPowerScript
 		//sws.WaterAudioSource = swordWaterPrefab.transform.Find("PrimaryHand").Find("SwordfishSimple8")
 		//	.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
 		//	.Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawn").GetComponent<AudioSource>();
-		//sws.WaterPS = swordWaterPrefab.transform.Find("PrimaryHand").Find("SwordfishSimple8")
+		//sws.GushPS = swordWaterPrefab.transform.Find("PrimaryHand").Find("SwordfishSimple8")
 		//	.Find("Spine.001").Find("Spine.002").Find("Spine.003").Find("Spine.004")
 		//	.Find("Spine.006").Find("Spine.005").Find("Spine.007").Find("SpitSpawn")
 		//	.Find("WaterParticle").Find("Gush").GetComponent<ParticleSystem>();
