@@ -1485,7 +1485,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   WiggleMagnitude: 40
   WiggleShootingMagnitude: 1
-  PointForce: 60
+  PointForce: 80
   GushPS: {fileID: 0}
   CorePS: {fileID: 0}
   TrailsPS: {fileID: 0}
@@ -3705,7 +3705,7 @@ PrefabInstance:
     - target: {fileID: 6233627213907955010, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
       propertyPath: simulationSpeed
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6233627213907955010, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
@@ -3715,12 +3715,17 @@ PrefabInstance:
     - target: {fileID: 6233627213907955010, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
       propertyPath: VelocityModule.y.scalar
-      value: 8
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233627213907955010, guid: f9032db418374e941b6956cedac8f0c2,
+        type: 3}
+      propertyPath: ClampVelocityModule.enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6233627213907955010, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
       propertyPath: InheritVelocityModule.enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6233627213907955010, guid: f9032db418374e941b6956cedac8f0c2,
         type: 3}
